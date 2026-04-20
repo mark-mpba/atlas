@@ -2,7 +2,7 @@
 
 namespace mpba\Modules\Publishing;
 
-use laraveluse mpba\Modules\Migrations\Migrator;
+use mpba\Modules\Migrations\Migrator;
 
 class MigrationPublisher extends AssetPublisher
 {
