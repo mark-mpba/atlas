@@ -1,5 +1,5 @@
 <?php
 
-namespace Nwidart\Modules\Generators;
+namespace mpba\Modules\Generators;
 
 abstract class Generator {}

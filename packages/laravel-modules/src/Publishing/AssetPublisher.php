@@ -1,8 +1,8 @@
 <?php
 
-namespace Nwidart\Modules\Publishing;
+namespace mpba\Modules\Publishing;
 
-use Nwidart\Modules\Support\Config\GenerateConfigReader;
+use laraveluse mpba\Modules\Support\Config\GenerateConfigReader;
 
 class AssetPublisher extends Publisher
 {

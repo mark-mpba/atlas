@@ -2,38 +2,12 @@
 
 namespace mpba\Modules\Activators;
 
-use App\Models\ModuleStatus;
-use Illuminate\Cache\CacheManager;
-use Illuminate\Container\Container;
+use Illuminate\Support\Facades\DB;
 use mpba\Modules\Contracts\ActivatorInterface;
 use mpba\Modules\Module;
 
-
 class DatabaseActivator implements ActivatorInterface
 {
-    protected CacheManager $cache;
-    protected string $cacheKey;
-    protected int $cacheLifetime;
-
-    protected array $modulesStatuses = [];
-
-    public function __construct(Container $app)
-    {
-        $this->cache = $app['cache'];
-
-        $this->cacheKey = config('modules.activators.file.cache-key', 'modules');
-        $this->cacheLifetime = config('modules.activators.file.cache-lifetime', 60);
-
-        $this->modulesStatuses = $this->getModulesStatuses();
-    }
-
-    public function reset(): void
-    {
-        ModuleStatus::query()->delete();
-        $this->modulesStatuses = [];
-        $this->flushCache();
-    }
-
     public function enable(Module $module): void
     {
         $this->setActive($module, true);
@@ -46,13 +20,7 @@ class DatabaseActivator implements ActivatorInterface
 
     public function hasStatus(Module $module, bool $status): bool
     {
-        $name = $module->getName();
-
-        if (!isset($this->modulesStatuses[$name])) {
-            return $status === false;
-        }
-
-        return $this->modulesStatuses[$name] === $status;
+        return $this->getStatus($module, ! $status) === $status;
     }
 
     public function setActive(Module $module, bool $active): void
@@ -60,61 +28,36 @@ class DatabaseActivator implements ActivatorInterface
         $this->setActiveByName($module->getName(), $active);
     }
 
-    public function setActiveByName(string $name, bool $status): void
+    public function setActiveByName(string $name, bool $active): void
     {
-        ModuleStatus::updateOrCreate(
-            ['name' => $name],
-            ['enabled' => $status]
+        DB::table('module_statuses')->updateOrInsert(
+            ['module' => $name],
+            ['enabled' => $active]
         );
-
-        $this->modulesStatuses[$name] = $status;
-
-        $this->flushCache();
     }
 
     public function delete(Module $module): void
     {
-        ModuleStatus::where('name', $module->getName())->delete();
-
-        unset($this->modulesStatuses[$module->getName()]);
-
-        $this->flushCache();
+        DB::table('module_statuses')
+            ->where('module', $module->getName())
+            ->delete();
     }
 
-    protected function getModulesStatuses(): array
+    public function reset(): void
     {
-        if (!config('modules.cache.enabled')) {
-            return $this->readFromDatabase();
+        DB::table('module_statuses')->truncate();
+    }
+
+    protected function getStatus(Module $module, bool $default = false): bool
+    {
+        $row = DB::table('module_statuses')
+            ->where('module', $module->getName())
+            ->first();
+
+        if ($row === null) {
+            return $default;
         }
 
-        return $this->cache->remember(
-            $this->cacheKey,
-            $this->cacheLifetime,
-            fn() => $this->readFromDatabase()
-        );
+        return (bool) $row->enabled;
     }
-
-    protected function readFromDatabase(): array
-    {
-        return ModuleStatus::query()
-            ->pluck('enabled', 'name')
-            ->map(fn($value) => (bool)$value)
-            ->toArray();
-    }
-
-    protected function flushCache(): void
-    {
-        $this->cache->forget($this->cacheKey);
-    }
-
-    public function setProtected(string $name, bool $protected): void
-    {
-        ModuleStatus::updateOrCreate(
-            ['name' => $name],
-            ['protected' => $protected]
-        );
-
-        $this->flushCache();
-    }
-
 }

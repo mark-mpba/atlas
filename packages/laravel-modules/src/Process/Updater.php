@@ -1,8 +1,8 @@
 <?php
 
-namespace Nwidart\Modules\Process;
+namespace mpba\Modules\Process;
 
-use Nwidart\Modules\Module;
+use laraveluse mpba\Modules\Module;
 
 class Updater extends Runner
 {

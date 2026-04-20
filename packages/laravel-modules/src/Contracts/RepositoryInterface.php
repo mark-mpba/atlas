@@ -1,9 +1,11 @@
 <?php
 
-namespace Nwidart\Modules\Contracts;
+namespace mpba\Modules\Contracts;
 
-use Nwidart\Modules\Exceptions\ModuleNotFoundException;
-use Nwidart\Modules\Module;
+use Illuminate\Filesystem\Filesystem;
+use mpba\Modules\Collection;
+use mpba\Modules\Exceptions\ModuleNotFoundException;
+use mpba\Modules\Module;
 
 interface RepositoryInterface
 {
@@ -31,7 +33,7 @@ interface RepositoryInterface
     /**
      * Get modules as modules collection instance.
      *
-     * @return \Nwidart\Modules\Collection
+     * @return Collection
      */
     public function toCollection();
 
@@ -104,7 +106,7 @@ interface RepositoryInterface
     public function getModulePath($moduleName);
 
     /**
-     * @return \Illuminate\Filesystem\Filesystem
+     * @return Filesystem
      */
     public function getFiles();
 
@@ -146,7 +148,7 @@ interface RepositoryInterface
     /**
      * Delete a specific module.
      *
-     * @throws \Nwidart\Modules\Exceptions\ModuleNotFoundException
+     * @throws ModuleNotFoundException
      */
     public function delete(string $module): bool;
 

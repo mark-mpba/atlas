@@ -1,7 +1,7 @@
 {
   "name": "mpba/laravel-modules",
   "description": "Laravel Module management",
-  "version":"9.0.1",
+  "version":"13.0.0",
   "keywords": [
     "modules",
     "laravel",
@@ -65,5 +65,5 @@
     "pcf": "vendor/bin/php-cs-fixer fix --verbose"
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": false
 }

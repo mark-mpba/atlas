@@ -1,8 +1,8 @@
 <?php
 
-namespace Nwidart\Modules\Publishing;
+namespace mpba\Modules\Publishing;
 
-use Nwidart\Modules\Migrations\Migrator;
+use laraveluse mpba\Modules\Migrations\Migrator;
 
 class MigrationPublisher extends AssetPublisher
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Nwidart\Modules\Commands;
+namespace mpba\Modules\Commands;
 
 use Illuminate\Console\Command;
-use Nwidart\Modules\Exceptions\FileAlreadyExistException;
-use Nwidart\Modules\Generators\FileGenerator;
+use mpba\Modules\Exceptions\FileAlreadyExistException;
+use mpba\Modules\Generators\FileGenerator;
 
 abstract class GeneratorCommand extends Command
 {
@@ -77,7 +77,7 @@ abstract class GeneratorCommand extends Command
     /**
      * Get class namespace.
      *
-     * @param  \Nwidart\Modules\Module  $module
+     * @param  \mpba\Modules\Module  $module
      * @return string
      */
     public function getClassNamespace($module)

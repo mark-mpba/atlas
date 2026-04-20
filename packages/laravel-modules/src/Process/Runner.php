@@ -1,17 +1,13 @@
 <?php
 
-namespace Nwidart\Modules\Process;
+namespace mpba\Modules\Process;
 
-use Nwidart\Modules\Contracts\RepositoryInterface;
-use Nwidart\Modules\Contracts\RunableInterface;
+use mpba\Modules\Contracts\RepositoryInterface;
+use mpba\Modules\Contracts\RunableInterface;
 
 class Runner implements RunableInterface
 {
-    /**
-     * The module instance.
-     *
-     * @var RepositoryInterface
-     */
+
     protected $module;
 
     public function __construct(RepositoryInterface $module)

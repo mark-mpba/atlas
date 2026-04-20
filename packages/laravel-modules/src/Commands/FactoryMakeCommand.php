@@ -1,11 +1,11 @@
 <?php
 
-namespace Nwidart\Modules\Commands;
+namespace mpba\Modules\Commands;
 
 use Illuminate\Support\Str;
-use Nwidart\Modules\Support\Config\GenerateConfigReader;
-use Nwidart\Modules\Support\Stub;
-use Nwidart\Modules\Traits\ModuleCommandTrait;
+use mpba\Modules\Support\Config\GenerateConfigReader;
+use mpba\Modules\Support\Stub;
+use mpba\Modules\Traits\ModuleCommandTrait;
 use Symfony\Component\Console\Input\InputArgument;
 
 class FactoryMakeCommand extends GeneratorCommand

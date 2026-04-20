@@ -1,10 +1,10 @@
 <?php
 
-namespace Nwidart\Modules\Process;
+namespace mpba\Modules\Process;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use Nwidart\Modules\Contracts\RepositoryInterface;
+use mpba\Modules\Contracts\RepositoryInterface;
 use Symfony\Component\Process\Process;
 
 class Installer
@@ -26,7 +26,7 @@ class Installer
     /**
      * The module repository instance.
      *
-     * @var \Nwidart\Modules\Contracts\RepositoryInterface
+     * @var mpba\Modules\Contracts\RepositoryInterface
      */
     protected $repository;
 

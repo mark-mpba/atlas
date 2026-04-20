@@ -1,9 +1,9 @@
 <?php
 
-namespace Nwidart\Modules;
+namespace mpba\Modules;
 
 use Illuminate\Filesystem\Filesystem;
-use Nwidart\Modules\Exceptions\InvalidJsonException;
+use mpba\Modules\Exceptions\InvalidJsonException;
 
 class Json
 {

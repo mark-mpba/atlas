@@ -1,10 +1,10 @@
 <?php
 
-namespace Nwidart\Modules\Commands;
+namespace mpba\Modules\Commands;
 
 use Illuminate\Console\Command;
-use Nwidart\Modules\Migrations\Migrator;
-use Nwidart\Modules\Traits\MigrationLoaderTrait;
+use mpba\Modules\Migrations\Migrator;
+use mpba\Modules\Traits\MigrationLoaderTrait;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -27,7 +27,7 @@ class MigrateRollbackCommand extends Command
     protected $description = 'Rollback the modules migrations.';
 
     /**
-     * @var \Nwidart\Modules\Contracts\RepositoryInterface
+     * @var mpba\Modules\Contracts\RepositoryInterface
      */
     protected $module;
 

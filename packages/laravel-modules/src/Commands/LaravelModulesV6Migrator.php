@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Nwidart\Modules\Commands;
+namespace mpba\Modules\Commands;
 
 use Illuminate\Console\Command;
-use Nwidart\Modules\Contracts\RepositoryInterface;
-use Nwidart\Modules\Module;
+use mpba\Modules\Contracts\RepositoryInterface;
+use mpba\Modules\Module;
 
 class LaravelModulesV6Migrator extends Command
 {
@@ -17,7 +17,7 @@ class LaravelModulesV6Migrator extends Command
     public function handle(): int
     {
         $moduleStatuses = [];
-        /** @var RepositoryInterface $modules */
+        /** @var mpba\Modules\Contracts\RepositoryInterface $modules */
         $modules = $this->laravel['modules'];
 
         $modules = $modules->all();

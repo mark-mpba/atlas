@@ -1,5 +1,5 @@
 <?php
 
-namespace Nwidart\Modules\Exceptions;
+namespace mpba\Modules\Exceptions;
 
 class FileAlreadyExistException extends \Exception {}

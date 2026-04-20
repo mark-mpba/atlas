@@ -1,20 +1,21 @@
 <?php
 
-namespace Nwidart\Modules;
+namespace mpba\Modules;
 
-use Nwidart\Modules\Contracts\RepositoryInterface;
-use Nwidart\Modules\Exceptions\InvalidActivatorClass;
-use Nwidart\Modules\Support\Stub;
+use mpba\Modules\Contracts\RepositoryInterface;
+use mpba\Modules\Exceptions\InvalidActivatorClass;
+use mpba\Modules\Support\Stub;
 
 class LaravelModulesServiceProvider extends ModulesServiceProvider
 {
     /**
      * Booting the package.
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerNamespaces();
         $this->registerModules();
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
     }
 
     /**
@@ -36,7 +37,7 @@ class LaravelModulesServiceProvider extends ModulesServiceProvider
         Stub::setBasePath($path);
 
         $this->app->booted(function ($app) {
-            /** @var RepositoryInterface $moduleRepository */
+            /** @var mpba\Modules\Contracts\RepositoryInterface $moduleRepository */
             $moduleRepository = $app[RepositoryInterface::class];
             if ($moduleRepository->config('stubs.enabled') === true) {
                 Stub::setBasePath($moduleRepository->config('stubs.path'));
@@ -49,7 +50,7 @@ class LaravelModulesServiceProvider extends ModulesServiceProvider
      */
     protected function registerServices()
     {
-        $this->app->singleton(Contracts\RepositoryInterface::class, function ($app) {
+        $this->app->singleton(mpba\Modules\Contracts\RepositoryInterface::class, function ($app) {
             $path = $app['config']->get('modules.paths.modules');
 
             return new Laravel\LaravelFileRepository($app, $path);
@@ -64,6 +65,6 @@ class LaravelModulesServiceProvider extends ModulesServiceProvider
 
             return new $class($app);
         });
-        $this->app->alias(Contracts\RepositoryInterface::class, 'modules');
+        $this->app->alias(mpba\Modules\Contracts\RepositoryInterface::class, 'modules');
     }
 }

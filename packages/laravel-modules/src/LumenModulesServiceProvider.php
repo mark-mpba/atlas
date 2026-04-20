@@ -1,8 +1,8 @@
 <?php
 
-namespace Nwidart\Modules;
+namespace mpba\Modules;
 
-use Nwidart\Modules\Support\Stub;
+use mpba\Modules\Support\Stub;
 
 class LumenModulesServiceProvider extends ModulesServiceProvider
 {
@@ -42,7 +42,7 @@ class LumenModulesServiceProvider extends ModulesServiceProvider
      */
     protected function registerServices()
     {
-        $this->app->singleton(Contracts\RepositoryInterface::class, function ($app) {
+        $this->app->singleton(mpba\Modules\Contracts\RepositoryInterface::class, function ($app) {
             $path = $app['config']->get('modules.paths.modules');
 
             return new Lumen\LumenFileRepository($app, $path);
@@ -53,6 +53,6 @@ class LumenModulesServiceProvider extends ModulesServiceProvider
 
             return new $class($app);
         });
-        $this->app->alias(Contracts\RepositoryInterface::class, 'modules');
+        $this->app->alias(mpba\Modules\Contracts\RepositoryInterface::class, 'modules');
     }
 }
