@@ -1,11 +1,18 @@
-@import 'tailwindcss';
+@import 'datatables.net-bs5/css/dataTables.bootstrap5.css';
+@import 'datatables.net-buttons-bs5/css/buttons.bootstrap5.css';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
-
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    color: #1f2937;
 }
+
+.admin-shell { min-height: 100vh; }
+.admin-sidebar { width: 260px; background: #002c6f; color: #fff; position: fixed; top: 0; bottom: 0; left: 0; padding: 1rem; }
+.admin-sidebar a { color: #fff; text-decoration: none; }
+.admin-main { margin-left: 260px; padding: 1.5rem; }
+.abbott-card-header { background: #003a8f; color: #fff; border-bottom: 4px solid #002c6f; }
+.metric-card { border: 0; border-radius: .75rem; box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+.metric-value { font-size: 2rem; font-weight: 700; }
+.document-status-badge { font-size: .8rem; }
+.preview-frame { min-height: 400px; background: #fff; border: 1px solid #dee2e6; border-radius: .5rem; padding: 1rem; }
