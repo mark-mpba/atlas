@@ -13,7 +13,10 @@
         "mpba/laravel-modules": "dev-main",
         "mpba/laravel-settings": "dev-main",
         "predis/predis": "^3.4",
+        "ramsey/uuid": "^4.9",
+        "spatie/laravel-medialibrary": "^11.21",
         "spatie/laravel-permission": "^7.3",
+        "spatie/pdf-to-text": "^1.54",
         "yajra/laravel-datatables": "^13.0"
     },
     "require-dev": {
