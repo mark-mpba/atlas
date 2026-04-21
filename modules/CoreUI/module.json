@@ -1,0 +1,14 @@
+{
+    "name": "CoreUI",
+    "alias": "coreui",
+    "version": "1.0.0",
+    "description": "CoreUI Functions and templates",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CoreUI\\Providers\\CoreUIServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

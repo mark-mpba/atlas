@@ -7,11 +7,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "laravel/fortify": "^1.36",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "league/commonmark": "^2.8",
         "mpba/laravel-modules": "dev-main",
-        "mpba/laravel-settings": "dev-main",
         "predis/predis": "^3.4",
         "ramsey/uuid": "^4.9",
         "spatie/laravel-medialibrary": "^11.21",
