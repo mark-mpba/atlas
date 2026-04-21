@@ -1,3 +1,10 @@
 {
-    "Users": true
+    "Users": true,
+    "Admin": true,
+    "CoreUI": true,
+    "Auditable": true,
+    "Core": true,
+    "Documents": true,
+    "Settings": true,
+    "Categories": true
 }

@@ -1,0 +1,29 @@
+{
+    "name": "mpba/auditable",
+    "description": "",
+    "authors": [
+        {
+            "name": "Mark Gregory",
+            "email": "mark.gregory@mpba.co.uk"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Auditable\\": ""
+        },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Modules\\Auditable\\Tests\\": "modules/Auditable/Tests/"
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "name": "mpba/core",
+    "description": "",
+    "authors": [
+        {
+            "name": "Mark Gregory",
+            "email": "mark.gregory@mpba.co.uk"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Core\\": ""
+        },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Modules\\Core\\Tests\\": "modules/Core/Tests/"
+            }
+        }
+    }
+}

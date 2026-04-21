@@ -1,0 +1,14 @@
+{
+    "name": "Auditable",
+    "alias": "auditable",
+    "version": "1.0.0",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Auditable\\Providers\\AuditableServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

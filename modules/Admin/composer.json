@@ -1,0 +1,29 @@
+{
+    "name": "mpba/admin",
+    "description": "",
+    "authors": [
+        {
+            "name": "Mark Gregory",
+            "email": "mark.gregory@mpba.co.uk"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Admin\\": ""
+        },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Modules\\Admin\\Tests\\": "modules/Admin/Tests/"
+            }
+        }
+    }
+}
