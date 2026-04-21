@@ -195,3 +195,61 @@ td, th {
     flex: 1;
     text-align: center;
 }
+
+.wy-menu.wy-menu-vertical ul,
+
+.wy-menu.wy-menu-vertical li,
+
+.wy-menu.wy-menu-vertical li.current,
+
+.wy-menu.wy-menu-vertical li.current > ul,
+
+.wy-menu.wy-menu-vertical li.toctree-l1.current > a,
+
+.wy-menu.wy-menu-vertical li.toctree-l2.current > a {
+
+    background: #2f2b2b !important;
+
+    color: #ffffff !important;
+
+}
+
+.wy-menu.wy-menu-vertical a {
+
+    color: #ffffff !important;
+
+}
+
+.wy-menu.wy-menu-vertical a:hover,
+
+.wy-menu.wy-menu-vertical a:focus {
+
+    background: #3a3535 !important;
+
+    color: #ffffff !important;
+
+}
+
+.wy-menu.wy-menu-vertical li.current > a,
+
+.wy-menu.wy-menu-vertical li.current > a:hover {
+
+    background: #3a3535 !important;
+
+    color: #ffffff !important;
+
+}
+
+.wy-menu.wy-menu-vertical li.toctree-l2.current > a {
+
+    font-weight: 700;
+
+    color: #ffffff !important;
+
+}
+
+.wy-menu.wy-menu-vertical ul.current {
+
+    background: #2f2b2b !important;
+
+}

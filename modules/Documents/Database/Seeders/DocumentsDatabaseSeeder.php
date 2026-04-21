@@ -22,9 +22,15 @@ class DocumentsDatabaseSeeder extends Seeder
     {
         Document::truncate();
 
-        $sentinelCategoryId = Category::query()
-            ->where('slug', 'sentinel')
-            ->value('id');
+        $sentinelCategory = Category::query()->updateOrCreate(
+            [
+                'slug' => 'sentinel',
+            ],
+            [
+                'name' => 'Sentinel',
+                'description' => 'Sentinel documentation',
+            ]
+        );
 
         $documents = [
             [
@@ -177,7 +183,7 @@ class DocumentsDatabaseSeeder extends Seeder
                     'published_at' => now(),
                     'meta_title' => $documentData['title'],
                     'meta_description' => $documentData['excerpt'],
-                    'category_id' => $sentinelCategoryId,
+                    'category_id' => $sentinelCategory->id,
                 ]
             );
         }

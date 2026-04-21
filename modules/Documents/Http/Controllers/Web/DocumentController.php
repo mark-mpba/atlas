@@ -27,7 +27,7 @@ class DocumentController extends Controller
 
         return view('documents::web.index', [
             'documents' => $documents,
-            'navigation' => $this->buildNavigation(),
+            'navigation' => $this->buildNavigation(null, true),
         ]);
     }
 
@@ -47,7 +47,7 @@ class DocumentController extends Controller
 
         return view('documents::web.show', [
             'document' => $document,
-            'navigation' => $this->buildNavigation($document->slug),
+            'navigation' => $this->buildNavigation($document->slug, false),
         ]);
     }
 
@@ -55,9 +55,10 @@ class DocumentController extends Controller
      * Build the sidebar navigation from categories and published documents.
      *
      * @param string|null $activeSlug
+     * @param bool $expandAll
      * @return array<int, array<string, mixed>>
      */
-    protected function buildNavigation(?string $activeSlug = null): array
+    protected function buildNavigation(?string $activeSlug = null, bool $expandAll = false): array
     {
         $categories = Category::query()
             ->with([
@@ -69,7 +70,7 @@ class DocumentController extends Controller
             ->orderBy('name')
             ->get();
 
-        return $categories->map(function (Category $category) use ($activeSlug): array {
+        return $categories->map(function (Category $category) use ($activeSlug, $expandAll): array {
             $children = $category->documents->map(function (Document $document) use ($activeSlug): array {
                 return [
                     'title' => $document->title,
@@ -78,9 +79,11 @@ class DocumentController extends Controller
                 ];
             })->values()->all();
 
+            $hasActiveChild = collect($children)->contains(fn (array $child): bool => $child['active']);
+
             return [
                 'title' => $category->name,
-                'active' => collect($children)->contains(fn (array $child): bool => $child['active']),
+                'active' => $expandAll || $hasActiveChild,
                 'children' => $children,
             ];
         })->filter(function (array $section): bool {
