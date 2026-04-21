@@ -127,14 +127,52 @@ return new class extends Migration
      */
     private function hasIndex(string $tableName, string $indexName): bool
     {
-        $databaseName = DB::getDatabaseName();
+        $driver = DB::getDriverName();
 
-        $result = DB::table('information_schema.statistics')
-            ->where('table_schema', $databaseName)
+        if ($driver === 'sqlite') {
+            return $this->hasIndexSqlite($tableName, $indexName);
+        }
+
+        if ($driver === 'mysql') {
+            return $this->hasIndexMySql($tableName, $indexName);
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the given index exists on a MySQL table.
+     *
+     * @param string $tableName
+     * @param string $indexName
+     * @return bool
+     */
+    private function hasIndexMySql(string $tableName, string $indexName): bool
+    {
+        return DB::table('information_schema.statistics')
+            ->where('table_schema', DB::getDatabaseName())
             ->where('table_name', $tableName)
             ->where('index_name', $indexName)
             ->exists();
+    }
 
-        return $result;
+    /**
+     * Determine whether the given index exists on a SQLite table.
+     *
+     * @param string $tableName
+     * @param string $indexName
+     * @return bool
+     */
+    private function hasIndexSqlite(string $tableName, string $indexName): bool
+    {
+        $indexes = DB::select("PRAGMA index_list('{$tableName}')");
+
+        foreach ($indexes as $index) {
+            if (isset($index->name) && $index->name === $indexName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };

@@ -6,25 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Categories\Models\Category;
-use Modules\Core\Traits\TracksUserStamps;
 
 class Document extends Model
 {
     use SoftDeletes;
-    use TracksUserStamps;
+
+    public const string TABLE_NAME = 'documents';
 
     /**
      * @var string
      */
-
-    public const string TABLE_NAME = 'documents';
     public $table = self::TABLE_NAME;
 
     /**
      * @var array<int, string>
      */
     protected $fillable = [
-
         'title',
         'slug',
         'excerpt',
@@ -35,6 +32,7 @@ class Document extends Model
         'published_at',
         'meta_title',
         'meta_description',
+        'category_id',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -43,13 +41,16 @@ class Document extends Model
     /**
      * @var array<string, string>
      */
-
     protected $casts = [
         'is_featured' => 'boolean',
         'published_at' => 'datetime',
     ];
 
-
+    /**
+     * Get the category that owns the document.
+     *
+     * @return BelongsTo
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
