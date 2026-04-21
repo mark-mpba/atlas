@@ -2,25 +2,25 @@
 
 namespace Modules\Admin\Support;
 
-class moduleInfo
+class ModuleInfo
 {
-    protected static string $moduleName =  'Admin';
-
     /**
-     * defines the Module Name
+     * Get the module name.
+     *
      * @return string
      */
     public static function name(): string
     {
-        return static::$moduleName;
+        return 'Admin';
     }
 
     /**
-     * define the lowercase version
+     * Get the lowercase module name.
+     *
      * @return string
      */
     public static function nameLower(): string
     {
-        return strtolower(static::$moduleName);
+        return 'admin';
     }
 }
