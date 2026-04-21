@@ -1,0 +1,103 @@
+{
+  "Modules/Admin/Resources/assets/js/app.js": {
+    "file": "assets/app-Bj12rFCa.js",
+    "name": "app",
+    "src": "Modules/Admin/Resources/assets/js/app.js",
+    "isDynamicEntry": true
+  },
+  "Modules/Auditable/Resources/assets/js/app.js": {
+    "file": "assets/app-DVCSflJP.js",
+    "name": "app",
+    "src": "Modules/Auditable/Resources/assets/js/app.js",
+    "isDynamicEntry": true
+  },
+  "Modules/Categories/Resources/assets/js/app.js": {
+    "file": "assets/app-IXMVDP3H.js",
+    "name": "app",
+    "src": "Modules/Categories/Resources/assets/js/app.js",
+    "isDynamicEntry": true
+  },
+  "Modules/Core/Resources/assets/js/app.js": {
+    "file": "assets/app-C_vPyLN3.js",
+    "name": "app",
+    "src": "Modules/Core/Resources/assets/js/app.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/bootstrap.js"
+    ]
+  },
+  "Modules/CoreUI/Resources/assets/js/app.js": {
+    "file": "assets/app-BOS7jg51.js",
+    "name": "app",
+    "src": "Modules/CoreUI/Resources/assets/js/app.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/bootstrap.js"
+    ],
+    "css": [
+      "assets/app-BYjLOkOZ.css"
+    ]
+  },
+  "Modules/Documents/Resources/assets/js/app.js": {
+    "file": "assets/app-C23mCi67.js",
+    "name": "app",
+    "src": "Modules/Documents/Resources/assets/js/app.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/bootstrap.js"
+    ]
+  },
+  "Modules/Settings/Resources/assets/js/app.js": {
+    "file": "assets/app-CDDZPUQc.js",
+    "name": "app",
+    "src": "Modules/Settings/Resources/assets/js/app.js",
+    "isDynamicEntry": true
+  },
+  "Modules/Users/Resources/assets/js/app.js": {
+    "file": "assets/app-DEpI2CoN.js",
+    "name": "app",
+    "src": "Modules/Users/Resources/assets/js/app.js",
+    "isDynamicEntry": true
+  },
+  "_jquery-DN8Y3fty.js": {
+    "file": "assets/jquery-DN8Y3fty.js",
+    "name": "jquery"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-4xQ0zlNA.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BczRjvF9.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-DN8Y3fty.js"
+    ],
+    "dynamicImports": [
+      "Modules/Admin/Resources/assets/js/app.js",
+      "Modules/Auditable/Resources/assets/js/app.js",
+      "Modules/Categories/Resources/assets/js/app.js",
+      "Modules/Core/Resources/assets/js/app.js",
+      "Modules/CoreUI/Resources/assets/js/app.js",
+      "Modules/Documents/Resources/assets/js/app.js",
+      "Modules/Settings/Resources/assets/js/app.js",
+      "Modules/Users/Resources/assets/js/app.js"
+    ]
+  },
+  "resources/js/bootstrap.js": {
+    "file": "assets/bootstrap-DolgdJEJ.js",
+    "name": "bootstrap",
+    "src": "resources/js/bootstrap.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-DN8Y3fty.js"
+    ]
+  }
+}

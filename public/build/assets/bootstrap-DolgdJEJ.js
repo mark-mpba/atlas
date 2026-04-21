@@ -1,0 +1,1 @@
+import{n as e,t}from"./jquery-DN8Y3fty.js";var n=e(t(),1);window.$=n.default,window.jQuery=n.default;
