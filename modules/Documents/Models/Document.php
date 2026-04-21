@@ -3,7 +3,9 @@
 namespace Modules\Documents\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Categories\Models\Category;
 use Modules\Core\Traits\TracksUserStamps;
 
 class Document extends Model
@@ -46,4 +48,10 @@ class Document extends Model
         'is_featured' => 'boolean',
         'published_at' => 'datetime',
     ];
+
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
 }
