@@ -46,9 +46,7 @@ class DocumentController extends Controller
     public function show(string $slug): View
     {
         $document = $this->documentRepository->findPublishedBySlug($slug);
-
         abort_if(!$document, 404);
-
         return view('documents::web.show', compact('document'));
     }
 }

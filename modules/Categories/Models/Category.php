@@ -14,8 +14,9 @@ class Category extends Model
     public $table = self::TABLE_NAME;
 
     protected $fillable = [
-        'key',
-        'value',
+        'name',
+        'desciprion',
+        'slug',
         'type',
         'deleted_at'
     ];

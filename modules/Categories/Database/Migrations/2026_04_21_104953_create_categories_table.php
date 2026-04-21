@@ -16,10 +16,11 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create(Category::TABLE_NAME, function (Blueprint $table) {
             $table->id();
-            $table->string('key');
-            $table->string('value');
+            $table->string('name');
+            $table->string('slug');
+            $table->string('description');
             $table->timestamps();
-            $table->timestamp('de;eted_at')->nullable();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 
