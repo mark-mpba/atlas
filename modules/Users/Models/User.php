@@ -15,7 +15,11 @@ class User extends Authenticatable
     use HasRoles;
 
     public const string TABLE_NAME = 'users';
-    public $table = self::TABLE_NAME;
+
+    /**
+     * @var string
+     */
+    protected $table = self::TABLE_NAME;
 
     /**
      * @var array<int, string>
@@ -24,6 +28,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
     ];
 
     /**
@@ -32,6 +39,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -40,5 +49,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'two_factor_confirmed_at' => 'datetime',
     ];
 }
