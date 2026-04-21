@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<title>{{ config('app.name', 'Atlas Docs') }}</title>
+
 	@php
 		$faviconPath = public_path('favicon.ico');
 		$faviconHref = asset('favicon.ico') . (file_exists($faviconPath) ? '?v=' . filemtime($faviconPath) : '');
 	@endphp
+
 	<link rel="icon" type="image/x-icon" href="{{ $faviconHref }}">
 	<link rel="shortcut icon" href="{{ $faviconHref }}">
+
 	@vite([
 		'resources/css/app.css',
 		'resources/css/docs/theme.css',
@@ -18,6 +21,49 @@
 		'resources/js/app.js',
 	])
 
+	<style>
+        .atlas-home-page {
+            min-height: 100vh;
+        }
+
+        .atlas-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .atlas-subtitle {
+            margin-top: 0.5rem;
+            color: #666;
+        }
+
+        .atlas-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .atlas-doc-card {
+            margin-top: 1.5rem;
+        }
+
+        .atlas-doc-card ul {
+            margin-left: 1.25rem;
+            list-style: disc;
+        }
+
+        .atlas-top-links {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .atlas-top-links .btn {
+            margin-bottom: 0;
+        }
+	</style>
 </head>
 <body class="wy-body-for-nav atlas-home-page">
 <div class="wy-grid-for-nav">
@@ -132,17 +178,18 @@
 								<a href="{{ url('/admin/documents') }}" class="btn btn-neutral">
 									Manage Documents
 								</a>
-							@endif
+							@endauth
 						</div>
 
 						<div class="section atlas-doc-card">
 							<h2>About this portal</h2>
+
 							<p>
 								The public site uses the Read the Docs-style theme stylesheet, with local overrides
 								applied through <code>theme_extra.css</code>. The layout is intentionally structured
-								around <code>wy-nav</code>, <code>wy-menu</code>, and <code>rst-content</code> classes.
+								around <code>wy-nav</code>, <code>wy-menu</code>, and <code>rst-content</code> classes
+								so the uploaded theme renders correctly.
 							</p>
-
 							<pre><code>v{{ app()->version() }}</code></pre>
 						</div>
 					</div>
@@ -151,7 +198,7 @@
 				<footer>
 					<hr>
 					<div role="contentinfo">
-						<p>&copy; {{ now()->year }} MPBA Limited</p>
+						<p>&copy; {{ now()->year }} {{ config('app.name', 'Atlas Docs') }}</p>
 					</div>
 				</footer>
 			</div>
