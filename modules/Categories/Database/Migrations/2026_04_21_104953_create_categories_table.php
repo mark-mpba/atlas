@@ -20,6 +20,8 @@ class CreateCategoriesTable extends Migration
             $table->string('slug');
             $table->string('description');
             $table->string('type')->nullable();
+            $table->integer('sort_order')->default(0);
+            $table->boolean('show_in_nav')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

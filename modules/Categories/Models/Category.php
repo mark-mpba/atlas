@@ -29,6 +29,17 @@ class Category extends Model
         'description',
         'slug',
         'type',
+        'sort_order',
+        'show_in_nav',
+    ];
+
+    /**
+     * @var array<string, string>
+     */
+
+    protected $casts = [
+        'show_in_nav' => 'boolean',
+        'sort_order'  => 'integer',
     ];
 
     /**
