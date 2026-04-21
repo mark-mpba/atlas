@@ -7,16 +7,20 @@ use Illuminate\Contracts\View\View;
 use Modules\Categories\Models\Category;
 use Modules\Documents\Models\Document;
 
+/**
+ * Class DocumentController
+ */
 class DocumentController extends Controller
 {
     /**
-     * Display the documentation index page.
+     * Display the documentation index.
      *
      * @return View
      */
     public function index(): View
     {
         $documents = Document::query()
+            ->with('category')
             ->where('status', 'published')
             ->orderBy('title')
             ->get();
@@ -28,7 +32,7 @@ class DocumentController extends Controller
     }
 
     /**
-     * Display a documentation page.
+     * Display a single document.
      *
      * @param string $slug
      * @return View
@@ -43,17 +47,17 @@ class DocumentController extends Controller
 
         return view('documents::web.show', [
             'document' => $document,
-            'navigation' => $this->buildNavigation($document),
+            'navigation' => $this->buildNavigation($document->slug),
         ]);
     }
 
     /**
-     * Build the sidebar navigation tree.
+     * Build the sidebar navigation from categories and published documents.
      *
-     * @param Document|null $currentDocument
+     * @param string|null $activeSlug
      * @return array<int, array<string, mixed>>
      */
-    private function buildNavigation(?Document $currentDocument = null): array
+    protected function buildNavigation(?string $activeSlug = null): array
     {
         $categories = Category::query()
             ->with([
@@ -65,20 +69,22 @@ class DocumentController extends Controller
             ->orderBy('name')
             ->get();
 
-        return $categories->map(function (Category $category) use ($currentDocument): array {
+        return $categories->map(function (Category $category) use ($activeSlug): array {
+            $children = $category->documents->map(function (Document $document) use ($activeSlug): array {
+                return [
+                    'title' => $document->title,
+                    'url' => route('documents.web.show', $document->slug),
+                    'active' => $document->slug === $activeSlug,
+                ];
+            })->values()->all();
+
             return [
                 'title' => $category->name,
-                'active' => $currentDocument !== null
-                    && (int) $currentDocument->category_id === (int) $category->id,
-                'children' => $category->documents->map(function (Document $document) use ($currentDocument): array {
-                    return [
-                        'title' => $document->title,
-                        'url' => route('documents.web.show', $document->slug),
-                        'active' => $currentDocument !== null
-                            && (int) $currentDocument->id === (int) $document->id,
-                    ];
-                })->values()->toArray(),
+                'active' => collect($children)->contains(fn (array $child): bool => $child['active']),
+                'children' => $children,
             ];
-        })->values()->toArray();
+        })->filter(function (array $section): bool {
+            return !empty($section['children']);
+        })->values()->all();
     }
 }
