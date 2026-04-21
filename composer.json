@@ -10,18 +10,24 @@
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "league/commonmark": "^2.8",
-        "mpba/laravel-modules": "^13.0",
+        "mpba/laravel-modules": "dev-main",
+        "mpba/laravel-settings": "dev-main",
         "predis/predis": "^3.4",
         "spatie/laravel-permission": "^7.3",
         "yajra/laravel-datatables": "^13.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^4.2",
+        "barryvdh/laravel-ide-helper": "^3.7",
+        "beyondcode/laravel-query-detector": "^2.3",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.5",
-        "laravel/pint": "^1.27",
+        "laravel/pint": "^1.29",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^12.5.12"
+        "phpunit/phpunit": "^12.5.12",
+        "spatie/laravel-backup": "^10.2",
+        "spatie/laravel-ray": "^1.43"
     },
     "autoload": {
         "psr-4": {
@@ -38,11 +44,12 @@
     },
   "repositories": [
     {
-      "type": "path",
-      "url": "./packages/*",
-      "options": {
-        "symlink": true
-      }
+        "type": "vcs",
+        "url": "git@github.com:MPBA-Ltd/laravel_modules.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:MPBA-Ltd/laravel_settings.git"
     }
   ],
     "scripts": {
