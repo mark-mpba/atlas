@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\CoreUI\Support;
+namespace Modules\Categories\Support;
 
-class moduleInfo
+class ModuleInfo
 {
-    protected static string $moduleName =  'CoreUI';
+    protected static string $moduleName =  'Categories';
 
     /**
      * defines the Module Name

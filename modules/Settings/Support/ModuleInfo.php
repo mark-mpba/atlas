@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Users\Support;
+namespace Modules\Settings\Support;
 
-class moduleInfo
+class ModuleInfo
 {
-    protected static string $moduleName =  'Users';
+    protected static string $moduleName =  'Settings';
 
     /**
      * defines the Module Name

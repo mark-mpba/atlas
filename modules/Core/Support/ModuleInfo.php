@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Auditable\Support;
+namespace Modules\Core\Support;
 
-class moduleInfo
+class ModuleInfo
 {
-    protected static string $moduleName =  'Auditable';
+    protected static string $moduleName =  'Core';
 
     /**
      * defines the Module Name
