@@ -1,5 +1,27 @@
 @import 'datatables.net-bs5/css/dataTables.bootstrap5.css';
 @import 'datatables.net-buttons-bs5/css/buttons.bootstrap5.css';
+@import "tailwindcss";
+
+
+:root {
+    --abbott-primary-blue: #009CDE;
+    --abbott-black: #000000;
+    --abbott-dark-blue: #002A3A;
+    --abbott-medium-blue: #004F71;
+    --abbott-light-blue: #5BC2E7;
+    --abbott-blue-mint: #64CCC9;
+    --abbott-purple: #470A68;
+    --abbott-magenta: #AA0061;
+    --abbott-red: #E4002B;
+    --abbott-orange: #FF6900;
+    --abbott-gold: #EEB33B;
+    --abbott-yellow: #FFD100;
+    --abbott-medium-green: #00B140;
+    --abbott-light-green: #7CCC6C;
+    --abbott-charcoal: #222731;
+    --abbott-border: #D9E2EC;
+    --abbott-surface: #F8FAFC;
+}
 
 body {
     font-family: Arial, sans-serif;
