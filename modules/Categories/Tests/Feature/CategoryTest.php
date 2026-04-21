@@ -55,34 +55,24 @@ class CategoryTest extends TestCase
         $this->assertSame(2, Category::query()->count());
     }
 
-    /**
-     * It can create a category.
-     *
-     * @return void
-     */
     public function test_it_can_create_a_category(): void
     {
-        $category = Category::query()->create([
+        $category = Category::create([
             'name' => 'Reports',
             'slug' => 'reports',
             'description' => 'Reports category',
         ]);
 
-        $this->assertNotNull($category->id);
-
         $this->assertDatabaseHas(Category::TABLE_NAME, [
+            'id' => $category->id,
+            'name' => 'Reports',
             'slug' => 'reports',
         ]);
     }
 
-    /**
-     * It can soft delete a category.
-     *
-     * @return void
-     */
     public function test_it_can_soft_delete_a_category(): void
     {
-        $category = Category::query()->create([
+        $category = Category::create([
             'name' => 'Archive',
             'slug' => 'archive',
             'description' => 'Archive category',

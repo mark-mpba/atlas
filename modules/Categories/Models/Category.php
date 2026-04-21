@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Documents\Models\Document;
 
+/**
+ * Class Category
+ */
 class Category extends Model
 {
     use SoftDeletes;
@@ -25,6 +28,7 @@ class Category extends Model
         'name',
         'description',
         'slug',
+        'type',
     ];
 
     /**

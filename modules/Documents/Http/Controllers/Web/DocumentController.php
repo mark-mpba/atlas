@@ -2,28 +2,15 @@
 
 namespace Modules\Documents\Http\Controllers\Web;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
-use Illuminate\Routing\Controller;
+use Modules\Categories\Models\Category;
 use Modules\Documents\Models\Document;
-use Modules\Documents\Repositories\DocumentRepository;
 
-/**
- * Class DocumentController
- */
 class DocumentController extends Controller
 {
     /**
-     * DocumentController constructor.
-     *
-     * @param DocumentRepository $documentRepository
-     */
-    public function __construct(
-        protected DocumentRepository $documentRepository
-    ) {
-    }
-
-    /**
-     * Display published documents.
+     * Display the documentation index page.
      *
      * @return View
      */
@@ -31,22 +18,67 @@ class DocumentController extends Controller
     {
         $documents = Document::query()
             ->where('status', 'published')
-            ->latest('published_at')
+            ->orderBy('title')
             ->get();
 
-        return view('documents::web.index', compact('documents'));
+        return view('documents::web.index', [
+            'documents' => $documents,
+            'navigation' => $this->buildNavigation(),
+        ]);
     }
 
     /**
-     * Display a published document.
+     * Display a documentation page.
      *
      * @param string $slug
      * @return View
      */
     public function show(string $slug): View
     {
-        $document = $this->documentRepository->findPublishedBySlug($slug);
-        abort_if(!$document, 404);
-        return view('documents::web.show', compact('document'));
+        $document = Document::query()
+            ->with('category')
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
+        return view('documents::web.show', [
+            'document' => $document,
+            'navigation' => $this->buildNavigation($document),
+        ]);
+    }
+
+    /**
+     * Build the sidebar navigation tree.
+     *
+     * @param Document|null $currentDocument
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildNavigation(?Document $currentDocument = null): array
+    {
+        $categories = Category::query()
+            ->with([
+                'documents' => function ($query): void {
+                    $query->where('status', 'published')
+                        ->orderBy('title');
+                },
+            ])
+            ->orderBy('name')
+            ->get();
+
+        return $categories->map(function (Category $category) use ($currentDocument): array {
+            return [
+                'title' => $category->name,
+                'active' => $currentDocument !== null
+                    && (int) $currentDocument->category_id === (int) $category->id,
+                'children' => $category->documents->map(function (Document $document) use ($currentDocument): array {
+                    return [
+                        'title' => $document->title,
+                        'url' => route('documents.web.show', $document->slug),
+                        'active' => $currentDocument !== null
+                            && (int) $currentDocument->id === (int) $document->id,
+                    ];
+                })->values()->toArray(),
+            ];
+        })->values()->toArray();
     }
 }
