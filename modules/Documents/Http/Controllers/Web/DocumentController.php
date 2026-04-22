@@ -268,7 +268,11 @@ class DocumentController extends Controller
 
 
     /**
-     * Remove the first heading only if it matches the document title.
+     * Remove a leading title from the rendered source when it matches the seeded document title.
+     *
+     * This checks the first few leading markdown lines or the first few leading HTML heading
+     * blocks and removes the first matching title occurrence. Home documents are handled
+     * by the caller and should skip this method.
      *
      * @param string $content
      * @param string $documentTitle
@@ -278,34 +282,120 @@ class DocumentController extends Controller
     protected function removeLeadingDocumentTitle(string $content, string $documentTitle, bool $isHtml = false): string
     {
         $content = ltrim($content);
-        $documentTitle = trim($documentTitle);
+        $documentTitle = $this->normaliseDocumentTitle($documentTitle);
 
         if ($documentTitle === '') {
             return $content;
         }
 
         if ($isHtml) {
-            if (preg_match('/^\s*<h1[^>]*>(.*?)<\/h1>\s*/is', $content, $matches)) {
-                $headingText = trim(strip_tags(html_entity_decode($matches[1], ENT_QUOTES | ENT_HTML5)));
-
-                if (strcasecmp($headingText, $documentTitle) === 0) {
-                    return preg_replace('/^\s*<h1[^>]*>.*?<\/h1>\s*/is', '', $content, 1) ?? $content;
-                }
-            }
-
-            return $content;
+            return $this->removeLeadingDocumentTitleFromHtml($content, $documentTitle);
         }
 
+        return $this->removeLeadingDocumentTitleFromMarkdown($content, $documentTitle);
+    }
+
+    /**
+     * Remove a leading matching title from markdown content.
+     *
+     * Looks only at the first few non-empty lines.
+     *
+     * @param string $content
+     * @param string $documentTitle
+     * @return string
+     */
+    protected function removeLeadingDocumentTitleFromMarkdown(string $content, string $documentTitle): string
+    {
         $content = preg_replace('/^\xEF\xBB\xBF/', '', $content) ?? $content;
 
-        if (preg_match('/^\s*#\s+(.+?)\R+/u', $content, $matches)) {
-            $headingText = trim($matches[1]);
+        $lines = preg_split("/\R/u", $content) ?: [];
+        $maxLinesToInspect = min(6, count($lines));
 
-            if (strcasecmp($headingText, $documentTitle) === 0) {
-                return preg_replace('/^\s*#\s+.+\R+/u', '', $content, 1) ?? $content;
+        for ($index = 0; $index < $maxLinesToInspect; $index++) {
+            $line = trim($lines[$index]);
+
+            if ($line === '') {
+                continue;
+            }
+
+            $candidate = null;
+
+            if (preg_match('/^#\s+(.+)$/u', $line, $matches)) {
+                $candidate = $matches[1];
+            } elseif (preg_match('/^\*\*(.+)\*\*$/u', $line, $matches)) {
+                $candidate = $matches[1];
+            } else {
+                $candidate = $line;
+            }
+
+            if ($this->normaliseDocumentTitle($candidate) !== $documentTitle) {
+                continue;
+            }
+
+            unset($lines[$index]);
+
+            if (isset($lines[$index + 1]) && trim($lines[$index + 1]) === '') {
+                unset($lines[$index + 1]);
+            }
+
+            return implode("\n", array_values($lines));
+        }
+
+        return $content;
+    }
+
+    /**
+     * Remove a leading matching title from HTML content.
+     *
+     * Looks only at the first few heading blocks near the start of the HTML.
+     *
+     * @param string $content
+     * @param string $documentTitle
+     * @return string
+     */
+    protected function removeLeadingDocumentTitleFromHtml(string $content, string $documentTitle): string
+    {
+        if (preg_match_all('/<(h1|h2|h3)[^>]*>(.*?)<\/\1>/is', $content, $matches, PREG_OFFSET_CAPTURE)) {
+            $count = min(3, count($matches[0]));
+
+            for ($index = 0; $index < $count; $index++) {
+                $fullMatch = $matches[0][$index][0];
+                $fullOffset = $matches[0][$index][1];
+                $headingInner = $matches[2][$index][0];
+
+                if ($fullOffset > 1500) {
+                    break;
+                }
+
+                $candidate = $this->normaliseDocumentTitle(
+                    html_entity_decode(strip_tags($headingInner), ENT_QUOTES | ENT_HTML5)
+                );
+
+                if ($candidate !== $documentTitle) {
+                    continue;
+                }
+
+                return substr($content, 0, $fullOffset)
+                    . preg_replace('/^\s+/', '', substr($content, $fullOffset + strlen($fullMatch)));
             }
         }
 
         return $content;
     }
+
+    /**
+     * Normalise a title for loose comparison.
+     *
+     * @param string $value
+     * @return string
+     */
+    protected function normaliseDocumentTitle(string $value): string
+    {
+        $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5);
+        $value = strip_tags($value);
+        $value = preg_replace('/\s+/u', ' ', trim($value)) ?? trim($value);
+
+        return mb_strtolower($value);
+    }
+
 }
