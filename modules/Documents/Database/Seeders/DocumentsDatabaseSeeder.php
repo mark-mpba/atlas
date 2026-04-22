@@ -136,6 +136,7 @@ class DocumentsDatabaseSeeder extends Seeder
                 'title' => 'Redis Server',
                 'slug' => 'redis-server',
                 'excerpt' => 'Basic Redis server startup and verification commands for AS400 environments.',
+                'is_favourite' => true,
             ],
             [
                 'file' => 'schedule.md',
@@ -154,6 +155,7 @@ class DocumentsDatabaseSeeder extends Seeder
                 'title' => 'SSHD Server',
                 'slug' => 'sshd-server',
                 'excerpt' => 'How to restart the SSH server on AS400 from a 5250 console.',
+                'is_favourite' => true,
             ],
             [
                 'file' => 'view_models.md',
