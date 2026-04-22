@@ -20,7 +20,7 @@ class DocumentController extends Controller
      *
      * @return View
      */
-    public function index(): View
+    public function __invoke(): View
     {
         $documents = Document::query()
             ->with('category')
