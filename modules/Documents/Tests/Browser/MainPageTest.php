@@ -16,12 +16,13 @@ class MainPageTest extends DuskTestCase
      * Test that the main page loads successfully.
      *
      * @return void
+     * @throws \Throwable
      */
     public function testMainPageLoads(): void
     {
         $this->browse(function (Browser $browser): void {
-            $browser->visit('/')
-                ->assertPathIs('/')
+            $browser->visit('/docs')
+                ->assertPathIs('/docs')
                 ->assertSee('Atlas');
         });
     }
