@@ -4,6 +4,8 @@ namespace Modules\Documents\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Modules\Categories\Models\Category;
 use Modules\Documents\Models\Document;
 
@@ -32,7 +34,7 @@ class DocumentController extends Controller
     }
 
     /**
-     * Display a single document.
+     * Display the requested document.
      *
      * @param string $slug
      * @return View
@@ -42,13 +44,77 @@ class DocumentController extends Controller
         $document = Document::query()
             ->with('category')
             ->where('slug', $slug)
-            ->where('status', 'published')
             ->firstOrFail();
+
+        $previousDocument = Document::query()
+            ->where('id', '<', $document->id)
+            ->orderByDesc('id')
+            ->first();
+
+        $nextDocument = Document::query()
+            ->where('id', '>', $document->id)
+            ->orderBy('id')
+            ->first();
+
+        $docSections = Category::query()
+            ->orderBy('name')
+            ->get()
+            ->map(function (Category $category) use ($document): array {
+                return [
+                    'label' => $category->name,
+                    'url' => route('documents.web.index', ['category' => $category->slug]),
+                    'active' => (int) $document->category_id === (int) $category->id,
+                ];
+            })
+            ->all();
+
+        $relatedDocuments = Document::query()
+            ->where('category_id', $document->category_id)
+            ->whereKeyNot($document->id)
+            ->limit(5)
+            ->get()
+            ->map(function (Document $related): array {
+                return [
+                    'title' => $related->title,
+                    'url' => route('documents.web.show', $related->slug),
+                ];
+            })
+            ->all();
+
+        $renderedContent = $this->resolveRenderedContent($document);
 
         return view('documents::web.show', [
             'document' => $document,
+            'previousDocument' => $previousDocument,
+            'nextDocument' => $nextDocument,
+            'docSections' => $docSections,
+            'relatedDocuments' => $relatedDocuments,
+            'renderedContent' => $renderedContent,
             'navigation' => $this->buildNavigation($document->slug, false),
         ]);
+    }
+
+    /**
+     * Resolve renderable HTML for a document.
+     *
+     * @param Document $document
+     * @return string
+     */
+    protected function resolveRenderedContent(Document $document): string
+    {
+        if (! empty($document->content)) {
+            return Str::markdown($document->content);
+        }
+
+        $sourcePath = $document->source_path ?? null;
+
+        if (! empty($sourcePath) && Storage::disk('docs')->exists($sourcePath)) {
+            return Str::markdown((string) Storage::disk('docs')->get($sourcePath));
+        }
+
+        throw new \RuntimeException(
+            'No markdown source path is configured for document [' . $document->slug . '].'
+        );
     }
 
     /**
@@ -56,7 +122,7 @@ class DocumentController extends Controller
      *
      * @param string|null $activeSlug
      * @param bool $expandAll
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     protected function buildNavigation(?string $activeSlug = null, bool $expandAll = false): array
     {
@@ -70,24 +136,47 @@ class DocumentController extends Controller
             ->orderBy('name')
             ->get();
 
-        return $categories->map(function (Category $category) use ($activeSlug, $expandAll): array {
+        $sections = $categories->map(function (Category $category) use ($activeSlug, $expandAll): array {
             $children = $category->documents->map(function (Document $document) use ($activeSlug): array {
                 return [
                     'title' => $document->title,
                     'url' => route('documents.web.show', $document->slug),
                     'active' => $document->slug === $activeSlug,
+                    'is_favourite' => (bool) ($document->is_favourite ?? false),
                 ];
             })->values()->all();
 
-            $hasActiveChild = collect($children)->contains(fn (array $child): bool => $child['active']);
+            $hasActiveChild = collect($children)->contains(function (array $child): bool {
+                return $child['active'];
+            });
 
             return [
                 'title' => $category->name,
-                'active' => $expandAll || $hasActiveChild,
+                'expanded' => $expandAll || $hasActiveChild,
                 'children' => $children,
             ];
         })->filter(function (array $section): bool {
-            return !empty($section['children']);
+            return ! empty($section['children']);
         })->values()->all();
+
+        $favourites = Document::query()
+            ->where('status', 'published')
+            ->where('is_favourite', true)
+            ->orderBy('title')
+            ->get()
+            ->map(function (Document $document) use ($activeSlug): array {
+                return [
+                    'title' => $document->title,
+                    'url' => route('documents.web.show', $document->slug),
+                    'active' => $document->slug === $activeSlug,
+                ];
+            })
+            ->values()
+            ->all();
+
+        return [
+            'sections' => $sections,
+            'favourites' => $favourites,
+        ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Modules\Documents\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Categories\Models\Category;
@@ -20,7 +21,7 @@ class DocumentsDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Document::truncate();
+        $documentTable = (new Document())->getTable();
 
         $sentinelCategory = Category::query()->updateOrCreate(
             [
@@ -158,33 +159,90 @@ class DocumentsDatabaseSeeder extends Seeder
                 'title' => 'Stop Treating Your Blade Files Like Trash Bins',
                 'slug' => 'blade-view-models-and-typed-views',
                 'excerpt' => 'Using ViewModels, typed Blade contracts, DTOs, and structured partials to make Laravel views safer and maintainable.',
+                'is_favourite' => true,
             ],
         ];
 
         foreach ($documents as $documentData) {
-            if (!Storage::disk('docs')->exists($documentData['file'])) {
-                $this->command?->warn('Missing file: ' . $documentData['file']);
+            if (! Storage::disk('docs')->exists($documentData['file'])) {
+                $this->command?->warn('Missing docs file: ' . $documentData['file']);
                 continue;
             }
 
             $markdownBody = Storage::disk('docs')->get($documentData['file']);
+            $htmlBody = (string) Str::markdown($markdownBody);
+
+            /**
+             * Base payload that matches the current document metadata.
+             *
+             * Only add fields that actually exist on the table.
+             */
+            $payload = [
+                'title' => $documentData['title'],
+                'slug' => $documentData['slug'],
+            ];
+
+            if (Schema::hasColumn($documentTable, 'excerpt')) {
+                $payload['excerpt'] = $documentData['excerpt'];
+            }
+
+            if (Schema::hasColumn($documentTable, 'description')) {
+                $payload['description'] = $documentData['excerpt'];
+            }
+
+            if (Schema::hasColumn($documentTable, 'content')) {
+                $payload['content'] = $markdownBody;
+            }
+
+            if (Schema::hasColumn($documentTable, 'markdown_body')) {
+                $payload['markdown_body'] = $markdownBody;
+            }
+
+            if (Schema::hasColumn($documentTable, 'html_body')) {
+                $payload['html_body'] = $htmlBody;
+            }
+
+            if (Schema::hasColumn($documentTable, 'source_path')) {
+                $payload['source_path'] = $documentData['file'];
+            }
+
+            if (Schema::hasColumn($documentTable, 'file_path')) {
+                $payload['file_path'] = $documentData['file'];
+            }
+
+            if (Schema::hasColumn($documentTable, 'status')) {
+                $payload['status'] = 'published';
+            }
+
+            if (Schema::hasColumn($documentTable, 'is_featured')) {
+                $payload['is_featured'] = false;
+            }
+
+            if (Schema::hasColumn($documentTable, 'published_at')) {
+                $payload['published_at'] = now();
+            }
+
+            if (Schema::hasColumn($documentTable, 'meta_title')) {
+                $payload['meta_title'] = $documentData['title'];
+            }
+
+            if (Schema::hasColumn($documentTable, 'meta_description')) {
+                $payload['meta_description'] = $documentData['excerpt'];
+            }
+
+            if (Schema::hasColumn($documentTable, 'category_id')) {
+                $payload['category_id'] = $sentinelCategory->id;
+            }
+
+            if (Schema::hasColumn($documentTable, 'is_favourite')) {
+                $payload['is_favourite'] = (bool) ($documentData['is_favourite'] ?? false);
+            }
 
             Document::query()->updateOrCreate(
                 [
                     'slug' => $documentData['slug'],
                 ],
-                [
-                    'title' => $documentData['title'],
-                    'excerpt' => $documentData['excerpt'],
-                    'markdown_body' => $markdownBody,
-                    'html_body' => (string) Str::markdown($markdownBody),
-                    'status' => 'published',
-                    'is_featured' => false,
-                    'published_at' => now(),
-                    'meta_title' => $documentData['title'],
-                    'meta_description' => $documentData['excerpt'],
-                    'category_id' => $sentinelCategory->id,
-                ]
+                $payload
             );
         }
     }

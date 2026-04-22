@@ -10,8 +10,7 @@
 	@vite([
     'resources/css/app.css',
     'resources/js/app.js',
-
-])
+    ])
 	@stack('styles')
 </head>
 <body class="min-h-screen bg-slate-50">
@@ -48,6 +47,7 @@
 			</button>
 		</div>
 
+		{{-- Sidebar --}}
 		<div class="flex-1 px-3 py-4">
 			<div class="mb-6">
 				<div class="sidebar-section-title px-3 pb-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200/80">
@@ -56,67 +56,101 @@
 
 				<nav class="space-y-1">
 					<a href="{{ url('/') }}" class="abbott-nav-link flex rounded-xl px-3 py-3 text-sm font-medium text-white/90">
-                            <span class="sidebar-link-inner flex items-center gap-3">
-                                <span class="text-sky-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5.5v-7h-5v7H4a1 1 0 0 1-1-1v-10.5Z" />
-                                    </svg>
-                                </span>
-                                <span class="sidebar-label">Home</span>
-                            </span>
-					</a>
-
-					<a href="{{ route('documents.web.index') ?? '#' }}" class="abbott-nav-link active flex rounded-xl px-3 py-3 text-sm font-medium text-white">
-                            <span class="sidebar-link-inner flex items-center gap-3">
-                                <span class="text-sky-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 4h8l4 4v12a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
-                                    </svg>
-                                </span>
-                                <span class="sidebar-label">Documents</span>
-                            </span>
-					</a>
-
-					<a href="#" class="abbott-nav-link flex rounded-xl px-3 py-3 text-sm font-medium text-white/90">
-                            <span class="sidebar-link-inner flex items-center gap-3">
-                                <span class="text-sky-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m11.049 2.927 2.132 6.562h6.901l-5.584 4.057 2.133 6.562-5.582-4.057-5.582 4.057 2.133-6.562L1.916 9.49h6.901l2.232-6.562Z" />
-                                    </svg>
-                                </span>
-                                <span class="sidebar-label">Favourites</span>
-                            </span>
+				<span class="sidebar-link-inner flex items-center gap-3">
+					<span class="text-sky-200">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5.5v-7h-5v7H4a1 1 0 0 1-1-1v-10.5Z" />
+						</svg>
+					</span>
+					<span class="sidebar-label">Home</span>
+				</span>
 					</a>
 				</nav>
 			</div>
+
+			@php
+				$navigation = $navigation ?? ['sections' => [], 'favourites' => []];
+			@endphp
 
 			<div class="mb-6">
 				<div class="sidebar-section-title px-3 pb-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200/80">
-					Collections
+					Documents
 				</div>
 
-				<nav class="space-y-1">
-					@php
-						$docSections = $docSections ?? [
-							['label' => 'Getting Started', 'url' => '#'],
-							['label' => 'Architecture', 'url' => '#'],
-							['label' => 'Modules', 'url' => '#'],
-							['label' => 'API Reference', 'url' => '#'],
-							['label' => 'Deployment', 'url' => '#'],
-						];
-					@endphp
+				<div class="space-y-2">
+					@foreach ($navigation['sections'] as $index => $section)
+						@php
+							$collapseId = 'doc-section-' . $index;
+							$isExpanded = !empty($section['expanded']);
+						@endphp
 
-					@foreach ($docSections as $section)
-						<a href="{{ $section['url'] }}"
-						   class="abbott-nav-link flex rounded-xl px-3 py-3 text-sm font-medium text-white/90">
-                                <span class="sidebar-link-inner flex items-center gap-3">
-                                    <span class="h-2.5 w-2.5 rounded-full bg-sky-300"></span>
-                                    <span class="sidebar-label">{{ $section['label'] }}</span>
-                                </span>
-						</a>
+						<div class="overflow-hidden rounded-2xl bg-white/5">
+							<button
+									type="button"
+									class="doc-nav-toggle flex w-full items-center justify-between px-3 py-3 text-left text-sm font-semibold text-white/95 hover:bg-white/10"
+									data-target="#{{ $collapseId }}"
+									aria-expanded="{{ $isExpanded ? 'true' : 'false' }}"
+							>
+						<span class="flex items-center gap-3">
+							<span class="text-sky-200">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h16" />
+								</svg>
+							</span>
+							<span>{{ $section['title'] }}</span>
+						</span>
+
+								<span class="doc-nav-chevron transition-transform duration-200 {{ $isExpanded ? 'rotate-90' : '' }}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
+							</svg>
+						</span>
+							</button>
+
+							<div id="{{ $collapseId }}" class="{{ $isExpanded ? '' : 'hidden' }}">
+								@if (!empty($section['children']))
+									<nav class="space-y-1 px-2 pb-2">
+										@foreach ($section['children'] as $child)
+											<a href="{{ $child['url'] }}"
+											   data-search-text="{{ strtolower($child['title']) }}"
+											   class="abbott-nav-link doc-search-item flex rounded-xl px-3 py-2 text-sm font-medium {{ $child['active'] ? 'active text-white' : 'text-white/85' }}">
+										<span class="sidebar-link-inner flex items-center gap-3">
+											<span class="h-2 w-2 rounded-full bg-sky-300"></span>
+											<span class="sidebar-label">{{ $child['title'] }}</span>
+										</span>
+											</a>
+										@endforeach
+									</nav>
+								@endif
+							</div>
+						</div>
 					@endforeach
-				</nav>
+				</div>
 			</div>
+
+			@if (! empty($navigation['favourites']))
+				<div class="mb-6">
+					<div class="sidebar-section-title px-3 pb-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200/80">
+						Favourites
+					</div>
+
+					<nav class="space-y-1">
+						@foreach ($navigation['favourites'] as $favourite)
+							<a href="{{ $favourite['url'] }}"
+							   class="abbott-nav-link flex rounded-xl px-3 py-2 text-sm font-medium {{ $favourite['active'] ? 'active text-white' : 'text-white/85' }}">
+						<span class="sidebar-link-inner flex items-center gap-3">
+							<span class="text-sky-200">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+									<path d="m9.049 2.927.951 2.928a1 1 0 0 0 .95.69h3.078l-2.49 1.809a1 1 0 0 0-.364 1.118l.951 2.928-2.49-1.809a1 1 0 0 0-1.176 0l-2.49 1.809.951-2.928a1 1 0 0 0-.364-1.118L4.972 6.545H8.05a1 1 0 0 0 .95-.69l.049-.151Z"/>
+								</svg>
+							</span>
+							<span class="sidebar-label">{{ $favourite['title'] }}</span>
+						</span>
+							</a>
+						@endforeach
+					</nav>
+				</div>
+			@endif
 		</div>
 
 		<div class="border-t border-white/10 px-4 py-4">
@@ -164,6 +198,7 @@
 				<div class="hidden md:flex md:w-full md:max-w-md md:items-center">
 					<div class="relative w-full">
 						<input
+								id="docsSearchInput"
 								type="text"
 								placeholder="Search documents..."
 								class="w-full rounded-xl border border-white/20 bg-white/10 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-slate-200 focus:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-300/30"
@@ -224,25 +259,10 @@
 									In This Document
 								</h3>
 							</div>
-
 							<nav id="docTocNav" class="space-y-3 text-sm">
-								@php
-									$tocItems = $tocItems ?? [
-										['id' => 'overview', 'label' => 'Overview'],
-										['id' => 'installation', 'label' => 'Installation'],
-										['id' => 'configuration', 'label' => 'Configuration'],
-										['id' => 'usage', 'label' => 'Usage'],
-										['id' => 'api-reference', 'label' => 'API Reference'],
-									];
-								@endphp
 
-								@foreach ($tocItems as $item)
-									<a href="#{{ $item['id'] }}"
-									   class="abbott-doc-link doc-toc-link block rounded-lg px-2 py-1.5 text-slate-600"
-									   data-target="{{ $item['id'] }}">
-										{{ $item['label'] }}
-									</a>
-								@endforeach
+								@stack('toc')
+
 							</nav>
 						</div>
 
@@ -252,11 +272,7 @@
 							</div>
 
 							@php
-								$relatedDocuments = $relatedDocuments ?? [
-									['title' => 'System Overview', 'url' => '#'],
-									['title' => 'Module Structure', 'url' => '#'],
-									['title' => 'Deployment Guide', 'url' => '#'],
-								];
+								$relatedDocuments = $relatedDocuments ?? [];
 							@endphp
 
 							<div class="space-y-2">

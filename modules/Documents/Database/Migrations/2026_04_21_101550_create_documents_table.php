@@ -35,6 +35,8 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable()->index();
             $table->string('meta_title', 255)->nullable();
             $table->text('meta_description')->nullable();
+            $table->string('source_path')->nullable();
+            $table->boolean('is_favourite')->default(false);
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

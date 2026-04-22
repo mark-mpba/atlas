@@ -1,64 +1,40 @@
 import '../sass/app.scss';
-import '@/bootstrap';
+
 $(function () {
     var $sidebar = $('#docsSidebar');
     var $mobileBackdrop = $('#mobileSidebarBackdrop');
     var $collapseBtn = $('#collapseSidebarBtn');
     var $openMobileBtn = $('#openSidebarMobileBtn');
     var $tocLinks = $('.doc-toc-link');
+    var $docsSearchInput = $('#docsSearchInput');
 
-    /**
-     * Toggle desktop sidebar collapsed state.
-     *
-     * @returns {void}
-     */
     function toggleSidebarCollapsedState() {
         $sidebar.toggleClass('sidebar-collapsed');
     }
 
-    /**
-     * Open the mobile sidebar.
-     *
-     * @returns {void}
-     */
     function openMobileSidebar() {
         $sidebar.removeClass('doc-sidebar-mobile-hidden');
-        $mobileBackdrop.removeClass('hidden');
+        $mobileBackdrop.show();
     }
 
-    /**
-     * Close the mobile sidebar.
-     *
-     * @returns {void}
-     */
     function closeMobileSidebar() {
         if (window.innerWidth < 1024) {
             $sidebar.addClass('doc-sidebar-mobile-hidden');
-            $mobileBackdrop.addClass('hidden');
+            $mobileBackdrop.hide();
         }
     }
 
-    /**
-     * Initialise sidebar state based on screen width.
-     *
-     * @returns {void}
-     */
     function initialiseResponsiveSidebar() {
         if (window.innerWidth < 1024) {
             $sidebar.addClass('doc-sidebar-mobile-hidden');
-            $mobileBackdrop.addClass('hidden');
+            $mobileBackdrop.hide();
             $sidebar.removeClass('sidebar-collapsed');
         } else {
             $sidebar.removeClass('doc-sidebar-mobile-hidden');
-            $mobileBackdrop.addClass('hidden');
+            $mobileBackdrop.hide();
         }
     }
 
-    /**
-     * Highlight the active in-document navigation item.
-     *
-     * @returns {void}
-     */
     function updateActiveTocLink() {
         var scrollPosition = $(window).scrollTop() + 140;
         var activeId = null;
@@ -74,6 +50,37 @@ $(function () {
         if (activeId) {
             $('.doc-toc-link[data-target="' + activeId + '"]').addClass('active');
         }
+    }
+
+    function filterDocumentationNavigation() {
+        var term = $.trim($docsSearchInput.val()).toLowerCase();
+
+        $('.doc-search-item').each(function () {
+            var $item = $(this);
+            var text = ($item.data('search-text') || '').toString();
+            var matches = term === '' || text.indexOf(term) !== -1;
+
+            $item.toggle(matches);
+        });
+
+        $('.doc-search-section').each(function () {
+            var $toggle = $(this);
+            var target = $toggle.data('target');
+            var $panel = $(target);
+            var $wrapper = $toggle.closest('.doc-search-section-wrapper');
+            var $visibleChildren = $panel.find('.doc-search-item:visible');
+            var sectionText = ($toggle.data('search-text') || '').toString();
+            var sectionMatches = term === '' || sectionText.indexOf(term) !== -1;
+            var hasVisibleChildren = $visibleChildren.length > 0;
+
+            $wrapper.toggle(sectionMatches || hasVisibleChildren);
+
+            if (term !== '' && hasVisibleChildren) {
+                $panel.show();
+                $toggle.find('.doc-nav-chevron').addClass('rotate-90');
+                $toggle.attr('aria-expanded', 'true');
+            }
+        });
     }
 
     $collapseBtn.on('click', function () {
@@ -92,6 +99,25 @@ $(function () {
         closeMobileSidebar();
     });
 
+    $('.doc-nav-toggle').on('click', function () {
+        if ($docsSearchInput.val().trim() !== '') {
+            return;
+        }
+
+        var $button = $(this);
+        var target = $button.data('target');
+        var $panel = $(target);
+        var $chevron = $button.find('.doc-nav-chevron');
+
+        $panel.stop(true, true).slideToggle(150);
+        $chevron.toggleClass('rotate-90');
+        $button.attr('aria-expanded', $panel.is(':visible') ? 'true' : 'false');
+    });
+
+    $docsSearchInput.on('input', function () {
+        filterDocumentationNavigation();
+    });
+
     $(window).on('resize', function () {
         initialiseResponsiveSidebar();
     });
@@ -102,4 +128,5 @@ $(function () {
 
     initialiseResponsiveSidebar();
     updateActiveTocLink();
+    filterDocumentationNavigation();
 });

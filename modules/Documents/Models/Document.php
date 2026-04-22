@@ -31,6 +31,8 @@ class Document extends Model
         'is_featured',
         'published_at',
         'meta_title',
+        'source_path',
+        'is_favourite',
         'meta_description',
         'category_id',
         'created_by',
@@ -44,6 +46,7 @@ class Document extends Model
     protected $casts = [
         'is_featured' => 'boolean',
         'published_at' => 'datetime',
+        'is_favourite' => 'boolean',
     ];
 
     /**

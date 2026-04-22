@@ -1,38 +1,56 @@
+@php
+	use Illuminate\Support\Str;
+@endphp
+
 @extends('coreui::layouts.docs')
 
-@section('title', 'Getting Started')
-@section('brand_title', 'Atlas Docs')
-@section('page_title', 'Getting Started')
-@section('document_section', 'Developer Guide')
-@section('document_title', 'Getting Started')
-@section('document_description', 'Introduction, installation, configuration, and first-use guidance for the platform.')
-@section('doc_version', 'v2.4')
-@section('prev_doc_url', '#')
-@section('next_doc_url', '#')
+@section('title', $document->title ?? 'Document')
+@section('brand_title', config('app.name'))
+@section('page_title', $document->title ?? 'Document')
+@section('document_section', optional($document->category)->name ?? 'Documentation')
+@section('document_title', $document->title ?? 'Document')
+@section('document_description', $document->description ?? 'Documentation page')
+@section('doc_version', $document->version ?? 'v1.0')
+@section('prev_doc_url', $previousDocument ? route('documents.web.show', $previousDocument->slug) : '#')
+@section('next_doc_url', $nextDocument ? route('documents.web.show', $nextDocument->slug) : '#')
 
 @section('content')
-	<h2 id="overview">Overview</h2>
-	<p>
-		This section introduces the documentation structure and the overall architecture.
-	</p>
+	@php
+		$rawContent = $renderedContent ?? '';
+		preg_match_all('/<h([2-3])[^>]*>(.*?)<\/h[2-3]>/i', $rawContent, $headingMatches, PREG_SET_ORDER);
+		$tocItems = collect($headingMatches)->map(function (array $match): array {
+			$label = trim(strip_tags(html_entity_decode($match[2])));
+			$id = Str::slug($label);
+			return [
+				'level' => (int) $match[1],
+				'id'    => $id,
+				'label' => $label,
+			];
+		})->values();
 
-	<h2 id="installation">Installation</h2>
-	<p>
-		Add installation instructions here.
-	</p>
+		$rawContent = preg_replace_callback('/<h([2-3])([^>]*)>(.*?)<\/h[2-3]>/i', function (array $match): string {
+			$label = trim(strip_tags(html_entity_decode($match[3])));
+			$id = Str::slug($label);
+			return '<h' . $match[1] . $match[2] . ' id="' . e($id) . '">' . $match[3] . '</h' . $match[1] . '>';
+		}, $rawContent);
 
-	<h2 id="configuration">Configuration</h2>
-	<p>
-		Add configuration guidance here.
-	</p>
+	@endphp
 
-	<h2 id="usage">Usage</h2>
-	<p>
-		Add usage examples here.
-	</p>
+	@push('toc')
+		@foreach ($tocItems as $item)
+			<a href="#{{ $item['id'] }}"
+			   class="abbott-doc-link doc-toc-link block rounded-lg px-2 py-1.5 text-slate-600 {{ $item['level'] === 3 ? 'ms-4 text-xs' : '' }}"
+			   data-target="{{ $item['id'] }}">
+				{{ $item['label'] }}
+			</a>
+		@endforeach
+	@endpush
 
-	<h2 id="api-reference">API Reference</h2>
-	<p>
-		Add API details here.
-	</p>
+	@if (! empty($rawContent))
+		{!! $rawContent !!}
+	@else
+		<div class="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-800">
+			No renderable markdown content was found for this document.
+		</div>
+	@endif
 @endsection
