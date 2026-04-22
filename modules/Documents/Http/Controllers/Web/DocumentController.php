@@ -128,6 +128,16 @@ class DocumentController extends Controller
      */
     protected function buildNavigation(?string $activeSlug = null, bool $expandAll = false): array
     {
+        $activeDocument = null;
+
+        if ($activeSlug !== null) {
+            $activeDocument = Document::query()
+                ->where('slug', $activeSlug)
+                ->first();
+        }
+
+        $collapseForHomeDocument = (bool) ($activeDocument?->is_home ?? false);
+
         $categories = Category::query()
             ->with([
                 'documents' => function ($query): void {
@@ -138,7 +148,7 @@ class DocumentController extends Controller
             ->orderBy('name')
             ->get();
 
-        $sections = $categories->map(function (Category $category) use ($activeSlug, $expandAll): array {
+        $sections = $categories->map(function (Category $category) use ($activeSlug, $expandAll, $collapseForHomeDocument): array {
             $children = $category->documents->map(function (Document $document) use ($activeSlug): array {
                 return [
                     'title' => $document->title,
@@ -154,7 +164,7 @@ class DocumentController extends Controller
 
             return [
                 'title' => $category->name,
-                'expanded' => $expandAll || $hasActiveChild,
+                'expanded' => $expandAll || ($hasActiveChild && ! $collapseForHomeDocument),
                 'children' => $children,
             ];
         })->filter(function (array $section): bool {

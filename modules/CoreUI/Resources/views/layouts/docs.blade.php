@@ -8,9 +8,10 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 
 	@vite([
-    'resources/css/app.css',
-    'resources/js/app.js',
-    ])
+		'resources/css/app.css',
+		'resources/js/app.js',
+	])
+
 	@stack('styles')
 </head>
 <body class="min-h-screen bg-slate-50">
@@ -47,7 +48,6 @@
 			</button>
 		</div>
 
-		{{-- Sidebar --}}
 		<div class="flex-1 px-3 py-4">
 			<div class="mb-6">
 				<div class="sidebar-section-title px-3 pb-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200/80">
@@ -56,14 +56,14 @@
 
 				<nav class="space-y-1">
 					<a href="{{ route('documents.web.home') }}" class="abbott-nav-link flex rounded-xl px-3 py-3 text-sm font-medium text-white/90">
-				<span class="sidebar-link-inner flex items-center gap-3">
-					<span class="text-sky-200">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5.5v-7h-5v7H4a1 1 0 0 1-1-1v-10.5Z" />
-						</svg>
-					</span>
-					<span class="sidebar-label">Home</span>
-				</span>
+						<span class="sidebar-link-inner flex items-center gap-3">
+							<span class="text-sky-200">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5.5v-7h-5v7H4a1 1 0 0 1-1-1v-10.5Z" />
+								</svg>
+							</span>
+							<span class="sidebar-label">Home</span>
+						</span>
 					</a>
 				</nav>
 			</div>
@@ -84,40 +84,44 @@
 							$isExpanded = !empty($section['expanded']);
 						@endphp
 
-						<div class="overflow-hidden rounded-2xl bg-white/5">
+						<div class="doc-search-section-wrapper overflow-hidden rounded-2xl bg-white/5">
 							<button
 									type="button"
-									class="doc-nav-toggle flex w-full items-center justify-between px-3 py-3 text-left text-sm font-semibold text-white/95 hover:bg-white/10"
+									data-search-text="{{ strtolower($section['title']) }}"
+									data-default-expanded="{{ $isExpanded ? 'true' : 'false' }}"
+									class="doc-nav-toggle doc-search-section flex w-full items-center justify-between px-3 py-3 text-left text-sm font-semibold text-white/95 hover:bg-white/10"
 									data-target="#{{ $collapseId }}"
 									aria-expanded="{{ $isExpanded ? 'true' : 'false' }}"
 							>
-						<span class="flex items-center gap-3">
-							<span class="text-sky-200">
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h16" />
-								</svg>
-							</span>
-							<span>{{ $section['title'] }}</span>
-						</span>
+								<span class="flex items-center gap-3">
+									<span class="text-sky-200">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h16" />
+										</svg>
+									</span>
+									<span>{{ $section['title'] }}</span>
+								</span>
 
 								<span class="doc-nav-chevron transition-transform duration-200 {{ $isExpanded ? 'rotate-90' : '' }}">
-							<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
-							</svg>
-						</span>
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
+									</svg>
+								</span>
 							</button>
 
-							<div id="{{ $collapseId }}" class="{{ $isExpanded ? '' : 'hidden' }}">
+							<div id="{{ $collapseId }}" class="doc-nav-panel" style="display: {{ $isExpanded ? 'block' : 'none' }};">
 								@if (!empty($section['children']))
 									<nav class="space-y-1 px-2 pb-2">
 										@foreach ($section['children'] as $child)
-											<a href="{{ $child['url'] }}"
-											   data-search-text="{{ strtolower($child['title']) }}"
-											   class="abbott-nav-link doc-search-item flex rounded-xl px-3 py-2 text-sm font-medium {{ $child['active'] ? 'active text-white' : 'text-white/85' }}">
-										<span class="sidebar-link-inner flex items-center gap-3">
-											<span class="h-2 w-2 rounded-full bg-sky-300"></span>
-											<span class="sidebar-label">{{ $child['title'] }}</span>
-										</span>
+											<a
+													href="{{ $child['url'] }}"
+													data-search-text="{{ strtolower($child['title']) }}"
+													class="abbott-nav-link doc-search-item flex rounded-xl px-3 py-2 text-sm font-medium {{ $child['active'] ? 'active text-white' : 'text-white/85' }}"
+											>
+												<span class="sidebar-link-inner flex items-center gap-3">
+													<span class="h-2 w-2 rounded-full bg-sky-300"></span>
+													<span class="sidebar-label">{{ $child['title'] }}</span>
+												</span>
 											</a>
 										@endforeach
 									</nav>
@@ -128,7 +132,7 @@
 				</div>
 			</div>
 
-			@if (! empty($navigation['favourites']))
+			@if (!empty($navigation['favourites']))
 				<div class="mb-6">
 					<div class="sidebar-section-title px-3 pb-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-200/80">
 						Favourites
@@ -136,16 +140,19 @@
 
 					<nav class="space-y-1">
 						@foreach ($navigation['favourites'] as $favourite)
-							<a href="{{ $favourite['url'] }}"
-							   class="abbott-nav-link flex rounded-xl px-3 py-2 text-sm font-medium {{ $favourite['active'] ? 'active text-white' : 'text-white/85' }}">
-						<span class="sidebar-link-inner flex items-center gap-3">
-							<span class="text-sky-200">
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-									<path d="m9.049 2.927.951 2.928a1 1 0 0 0 .95.69h3.078l-2.49 1.809a1 1 0 0 0-.364 1.118l.951 2.928-2.49-1.809a1 1 0 0 0-1.176 0l-2.49 1.809.951-2.928a1 1 0 0 0-.364-1.118L4.972 6.545H8.05a1 1 0 0 0 .95-.69l.049-.151Z"/>
-								</svg>
-							</span>
-							<span class="sidebar-label">{{ $favourite['title'] }}</span>
-						</span>
+							<a
+									href="{{ $favourite['url'] }}"
+									data-search-text="{{ strtolower($favourite['title']) }}"
+									class="abbott-nav-link doc-search-item flex rounded-xl px-3 py-2 text-sm font-medium {{ $favourite['active'] ? 'active text-white' : 'text-white/85' }}"
+							>
+								<span class="sidebar-link-inner flex items-center gap-3">
+									<span class="text-sky-200">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+											<path d="m9.049 2.927.951 2.928a1 1 0 0 0 .95.69h3.078l-2.49 1.809a1 1 0 0 0-.364 1.118l.951 2.928-2.49-1.809a1 1 0 0 0-1.176 0l-2.49 1.809.951-2.928a1 1 0 0 0-.364-1.118L4.972 6.545H8.05a1 1 0 0 0 .95-.69l.049-.151Z"/>
+										</svg>
+									</span>
+									<span class="sidebar-label">{{ $favourite['title'] }}</span>
+								</span>
 							</a>
 						@endforeach
 					</nav>
@@ -196,7 +203,6 @@
 				</div>
 
 				<div class="hidden md:flex md:w-full md:max-w-md md:items-center">
-
 					<div class="relative w-full">
 						<input
 								id="docsSearchInput"
@@ -204,11 +210,13 @@
 								placeholder="Search documents..."
 								class="w-full rounded-xl border border-white/20 bg-white/10 py-2.5 pl-10 pr-12 text-sm text-white placeholder:text-slate-200 focus:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-300/30"
 						>
+
 						<div class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sky-200">
 							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35m1.85-5.15a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
 							</svg>
 						</div>
+
 						<button
 								id="docsSearchClearBtn"
 								type="button"
@@ -220,7 +228,6 @@
 							</svg>
 						</button>
 					</div>
-
 				</div>
 			</div>
 		</header>
@@ -229,32 +236,61 @@
 			<div class="mx-auto grid max-w-screen-2xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:px-6">
 				<section class="min-w-0">
 					<div class="abbott-card rounded-3xl p-6 lg:p-8">
-						<div class="mb-8 flex flex-col gap-4 border-b border-slate-200 pb-6 md:flex-row md:items-center md:justify-between">
-							<div>
-								<p class="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-sky-600">
-									@yield('document_section', 'Technical Documentation')
-								</p>
-								<h2 class="text-3xl font-extrabold text-slate-900">
-									@yield('document_title', 'Document Title')
-								</h2>
-								<p class="mt-2 max-w-3xl text-sm text-slate-600">
-									@yield('document_description', 'A structured technical document using the Abbott colour palette and documentation navigation layout.')
-								</p>
-							</div>
+						@php
+							$documentSection = trim((string) $__env->yieldContent('document_section'));
+							$documentTitle = trim((string) $__env->yieldContent('document_title'));
+							$documentDescription = trim((string) $__env->yieldContent('document_description'));
+							$prevDocUrl = trim((string) $__env->yieldContent('prev_doc_url'));
+							$nextDocUrl = trim((string) $__env->yieldContent('next_doc_url'));
 
-							<div class="flex items-center gap-3">
-								<a href="@yield('prev_doc_url', '#')"
-								   class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-sky-300 hover:text-sky-700">
-									Previous
-								</a>
+							$showDocumentHero = $documentSection !== '' || $documentTitle !== '' || $documentDescription !== '';
+							$showDocumentNav = $prevDocUrl !== '' || $nextDocUrl !== '';
+						@endphp
 
-								<a href="@yield('next_doc_url', '#')"
-								   class="inline-flex items-center rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
-								   style="background-color: var(--abbott-primary-blue);">
-									Next
-								</a>
+						@if ($showDocumentHero || $showDocumentNav)
+							<div class="mb-8 flex flex-col gap-4 border-b border-slate-200 pb-6 md:flex-row md:items-center md:justify-between">
+								@if ($showDocumentHero)
+									<div>
+										@if ($documentSection !== '')
+											<p class="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-sky-600">
+												{{ $documentSection }}
+											</p>
+										@endif
+
+										@if ($documentTitle !== '')
+											<h2 class="text-3xl font-extrabold text-slate-900">
+												{{ $documentTitle }}
+											</h2>
+										@endif
+
+										@if ($documentDescription !== '')
+											<p class="mt-2 max-w-3xl text-sm text-slate-600">
+												{{ $documentDescription }}
+											</p>
+										@endif
+									</div>
+								@endif
+
+								@if ($showDocumentNav)
+									<div class="flex items-center gap-3">
+										@if ($prevDocUrl !== '')
+											<a href="{{ $prevDocUrl }}"
+											   class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-sky-300 hover:text-sky-700">
+												Previous
+											</a>
+										@endif
+
+										@if ($nextDocUrl !== '')
+											<a href="{{ $nextDocUrl }}"
+											   class="inline-flex items-center rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+											   style="background-color: var(--abbott-primary-blue);">
+												Next
+											</a>
+										@endif
+									</div>
+								@endif
 							</div>
-						</div>
+						@endif
 
 						<article class="abbott-content prose prose-slate max-w-none">
 							@yield('content')
@@ -271,10 +307,9 @@
 									In This Document
 								</h3>
 							</div>
+
 							<nav id="docTocNav" class="space-y-3 text-sm">
-
 								@stack('toc')
-
 							</nav>
 						</div>
 

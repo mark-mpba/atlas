@@ -27,7 +27,7 @@
     ]
   },
   "Modules/CoreUI/Resources/assets/js/app.js": {
-    "file": "assets/app-Bi7d61GX.js",
+    "file": "assets/app-DPgoHfKQ.js",
     "name": "app",
     "src": "Modules/CoreUI/Resources/assets/js/app.js",
     "isDynamicEntry": true,
@@ -61,7 +61,7 @@
     "name": "jquery"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BxTb63vG.css",
+    "file": "assets/app-DLtFY20n.css",
     "name": "app",
     "names": [
       "app.css"
@@ -70,7 +70,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-DPsfyLy1.js",
+    "file": "assets/app-cfbx4uVj.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

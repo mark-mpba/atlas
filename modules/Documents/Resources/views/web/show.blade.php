@@ -1,26 +1,31 @@
 @php
 	use Illuminate\Support\Str;
+
+	$isHomeDocument = (bool) ($document->is_home ?? false);
 @endphp
 
 @extends('coreui::layouts.docs')
 
 @section('title', $document->title ?? 'Document')
 @section('brand_title', config('app.name'))
-@section('page_title', $document->title ?? 'Document')
-@section('document_section', optional($document->category)->name ?? 'Documentation')
-@section('document_title', $document->title ?? 'Document')
-@section('document_description', $document->description ?? 'Documentation page')
+@section('page_title', $isHomeDocument ? (config('app.name') . ' Documentation') : ($document->title ?? 'Document'))
+@section('document_section', $isHomeDocument ? '' : (optional($document->category)->name ?? 'Documentation'))
+@section('document_title', $isHomeDocument ? '' : ($document->title ?? 'Document'))
+@section('document_description', $isHomeDocument ? '' : ($document->description ?? 'Documentation page'))
 @section('doc_version', $document->version ?? 'v1.0')
-@section('prev_doc_url', $previousDocument ? route('documents.web.show', $previousDocument->slug) : '#')
-@section('next_doc_url', $nextDocument ? route('documents.web.show', $nextDocument->slug) : '#')
+@section('prev_doc_url', $isHomeDocument ? '' : ($previousDocument ? route('documents.web.show', $previousDocument->slug) : '#'))
+@section('next_doc_url', $isHomeDocument ? '' : ($nextDocument ? route('documents.web.show', $nextDocument->slug) : '#'))
 
 @section('content')
 	@php
 		$rawContent = $renderedContent ?? '';
+
 		preg_match_all('/<h([2-3])[^>]*>(.*?)<\/h[2-3]>/i', $rawContent, $headingMatches, PREG_SET_ORDER);
+
 		$tocItems = collect($headingMatches)->map(function (array $match): array {
 			$label = trim(strip_tags(html_entity_decode($match[2])));
 			$id = Str::slug($label);
+
 			return [
 				'level' => (int) $match[1],
 				'id'    => $id,
@@ -31,9 +36,9 @@
 		$rawContent = preg_replace_callback('/<h([2-3])([^>]*)>(.*?)<\/h[2-3]>/i', function (array $match): string {
 			$label = trim(strip_tags(html_entity_decode($match[3])));
 			$id = Str::slug($label);
+
 			return '<h' . $match[1] . $match[2] . ' id="' . e($id) . '">' . $match[3] . '</h' . $match[1] . '>';
 		}, $rawContent);
-
 	@endphp
 
 	@push('toc')

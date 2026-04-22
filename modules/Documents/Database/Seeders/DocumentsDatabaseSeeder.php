@@ -164,6 +164,10 @@ class DocumentsDatabaseSeeder extends Seeder
             ],
         ];
 
+        if (Schema::hasColumn($documentTable, 'is_home')) {
+            Document::query()->update(['is_home' => false]);
+        }
+
         foreach ($documents as $documentData) {
             if (! Storage::disk('docs')->exists($documentData['file'])) {
                 $this->command?->warn('Missing docs file: ' . $documentData['file']);
@@ -173,11 +177,6 @@ class DocumentsDatabaseSeeder extends Seeder
             $markdownBody = Storage::disk('docs')->get($documentData['file']);
             $htmlBody = (string) Str::markdown($markdownBody);
 
-            /**
-             * Base payload that matches the current document metadata.
-             *
-             * Only add fields that actually exist on the table.
-             */
             $payload = [
                 'title' => $documentData['title'],
                 'slug' => $documentData['slug'],
@@ -243,13 +242,8 @@ class DocumentsDatabaseSeeder extends Seeder
                 $payload['is_home'] = (bool) ($documentData['is_home'] ?? false);
             }
 
-            if (Schema::hasColumn($documentTable, 'is_home')) {
-                Document::query()->update(['is_home' => false]);
-            }
             Document::query()->updateOrCreate(
-                [
-                    'slug' => $documentData['slug'],
-                ],
+                ['slug' => $documentData['slug']],
                 $payload
             );
         }
