@@ -104,8 +104,16 @@ class DocumentController extends Controller
      */
     protected function resolveRenderedContent(Document $document): string
     {
+        if (! empty($document->html_body)) {
+            return (string) $document->html_body;
+        }
+
+        if (! empty($document->markdown_body)) {
+            return Str::markdown((string) $document->markdown_body);
+        }
+
         if (! empty($document->content)) {
-            return Str::markdown($document->content);
+            return Str::markdown((string) $document->content);
         }
 
         $sourcePath = $document->source_path ?? null;
@@ -115,7 +123,7 @@ class DocumentController extends Controller
         }
 
         throw new \RuntimeException(
-            'No markdown source path is configured for document [' . $document->slug . '].'
+            'No renderable content or markdown source path is configured for document [' . $document->slug . '].'
         );
     }
 
