@@ -18,6 +18,7 @@
 <div class="flex h-screen overflow-hidden">
 	<aside
 			id="docsSidebar"
+			dusk="docs-sidebar"
 			class="abbott-sidebar-gradient abbott-scrollbar fixed inset-y-0 left-0 z-40 flex w-72 flex-col overflow-y-auto border-r border-white/10 text-white transition-all duration-300 lg:static lg:translate-x-0"
 	>
 		<div class="sidebar-brand-wrap flex items-center justify-between px-4 py-4 border-b border-white/10">
@@ -189,7 +190,7 @@
 						<div class="text-xs font-semibold uppercase tracking-[0.2em] text-sky-200">
 							Documentation Portal
 						</div>
-						<h1 class="text-lg font-bold text-white">
+						<h1 class="text-lg font-bold text-white" dusk="docs-page-title">
 							@yield('page_title', 'Document Viewer')
 						</h1>
 					</div>
@@ -284,8 +285,7 @@
 								@endif
 							</div>
 						@endif
-
-						<article class="abbott-content prose prose-slate max-w-none">
+						<article class="abbott-content prose prose-slate max-w-none" dusk="document-content">
 							@yield('content')
 						</article>
 					</div>

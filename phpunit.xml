@@ -1,49 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-
          bootstrap="vendor/autoload.php"
-
          colors="true"
-
 >
-
     <testsuites>
-
         <testsuite name="Unit">
-
             <directory>tests/Unit</directory>
-
         </testsuite>
 
         <testsuite name="Feature">
-
             <directory>tests/Feature</directory>
-
         </testsuite>
 
         <testsuite name="Modules">
+            <directory>modules/Categories/Tests/Unit</directory>
+            <directory>modules/Categories/Tests/Feature</directory>
 
-            <directory>modules/Categories/Tests</directory>
+            <directory>modules/Documents/Tests/Unit</directory>
+            <directory>modules/Documents/Tests/Feature</directory>
 
-            <directory>modules/Documents/Tests</directory>
+            <directory>modules/Users/Tests/Unit</directory>
+            <directory>modules/Users/Tests/Feature</directory>
 
-            <directory>modules/Users/Tests</directory>
+            <directory>modules/Admin/Tests/Unit</directory>
+            <directory>modules/Admin/Tests/Feature</directory>
 
-            <directory>modules/Admin/Tests</directory>
+            <directory>modules/Settings/Tests/Unit</directory>
+            <directory>modules/Settings/Tests/Feature</directory>
 
-            <directory>modules/Settings/Tests</directory>
+            <directory>modules/Auditable/Tests/Unit</directory>
+            <directory>modules/Auditable/Tests/Feature</directory>
 
-            <directory>modules/Auditable/Tests</directory>
+            <directory>modules/Core/Tests/Unit</directory>
+            <directory>modules/Core/Tests/Feature</directory>
 
-            <directory>modules/Core/Tests</directory>
-
-            <directory>modules/CoreUI/Tests</directory>
-
+            <directory>modules/CoreUI/Tests/Unit</directory>
+            <directory>modules/CoreUI/Tests/Feature</directory>
         </testsuite>
 
+        <testsuite name="Browser">
+            <directory>tests/Browser</directory>
+            <directory>modules/Core/Tests/Browser</directory>
+            <directory>modules/Documents/Tests/Browser</directory>
+            <directory>modules/Users/Tests/Browser</directory>
+            <directory>modules/Admin/Tests/Browser</directory>
+            <directory>modules/Settings/Tests/Browser</directory>
+            <directory>modules/Auditable/Tests/Browser</directory>
+            <directory>modules/Categories/Tests/Browser</directory>
+            <directory>modules/CoreUI/Tests/Browser</directory>
+        </testsuite>
     </testsuites>
 
     <source>
@@ -61,5 +68,4 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
     </php>
-
 </phpunit>

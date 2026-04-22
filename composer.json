@@ -24,6 +24,7 @@
         "barryvdh/laravel-ide-helper": "^3.7",
         "beyondcode/laravel-query-detector": "^2.3",
         "fakerphp/faker": "^1.23",
+        "laravel/dusk": "^8.6",
         "laravel/pail": "^1.2.5",
         "laravel/pint": "^1.29",
         "mockery/mockery": "^1.6",
