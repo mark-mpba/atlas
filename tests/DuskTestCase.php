@@ -1,47 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Illuminate\Support\Collection;
 use Laravel\Dusk\TestCase as BaseTestCase;
-use PHPUnit\Framework\Attributes\BeforeClass;
 
+/**
+ * Class DuskTestCase
+ */
 abstract class DuskTestCase extends BaseTestCase
 {
     /**
-     * Prepare for Dusk test execution.
+     * Start ChromeDriver before the test class runs.
+     *
+     * @return void
      */
-    #[BeforeClass]
-    public static function prepare(): void
+    public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
+
         if (! static::runningInSail()) {
-            static::startChromeDriver(['--port=9515']);
+            static::startChromeDriver([
+                '--port=9515',
+                '--verbose',
+            ]);
         }
     }
 
     /**
      * Create the RemoteWebDriver instance.
+     *
+     * @return \Facebook\WebDriver\Remote\RemoteWebDriver
      */
     protected function driver(): RemoteWebDriver
     {
-        $options = (new ChromeOptions)->addArguments(collect([
-            $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=1920,1080',
+        $options = (new ChromeOptions())->addArguments([
+            '--window-size=1920,1080',
             '--disable-search-engine-choice-screen',
             '--disable-smooth-scrolling',
-        ])->unless($this->hasHeadlessDisabled(), function (Collection $items) {
-            return $items->merge([
-                '--disable-gpu',
-                '--headless=new',
-            ]);
-        })->all());
+            '--disable-gpu',
+            '--headless=new',
+            '--no-sandbox',
+        ]);
+
+        $options->setBinary('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
 
         return RemoteWebDriver::create(
-            $_ENV['DUSK_DRIVER_URL'] ?? env('DUSK_DRIVER_URL') ?? 'http://localhost:9515',
+            'http://127.0.0.1:9515',
             DesiredCapabilities::chrome()->setCapability(
-                ChromeOptions::CAPABILITY, $options
+                ChromeOptions::CAPABILITY,
+                $options
             )
         );
     }
