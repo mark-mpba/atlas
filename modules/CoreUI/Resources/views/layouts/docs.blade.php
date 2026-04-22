@@ -163,10 +163,7 @@
 		<div class="border-t border-white/10 px-4 py-4">
 			<div class="sidebar-footer-text rounded-2xl bg-white/10 p-3">
 				<div class="text-xs font-semibold uppercase tracking-[0.2em] text-sky-200">
-					Current Version
-				</div>
-				<div class="mt-1 text-sm font-semibold text-white">
-					@yield('doc_version', 'v1.0')
+					Current Version: @yield('doc_version', 'v1.0')
 				</div>
 			</div>
 		</div>

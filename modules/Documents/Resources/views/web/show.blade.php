@@ -12,7 +12,7 @@
 @section('document_section', $isHomeDocument ? '' : (optional($document->category)->name ?? 'Documentation'))
 @section('document_title', $isHomeDocument ? '' : ($document->title ?? 'Document'))
 @section('document_description', $isHomeDocument ? '' : ($document->description ?? ''))
-@section('doc_version', $document->version ?? 'v1.0')
+@section('doc_version', $document->version ?? 'v1.0.0')
 @section('prev_doc_url', $isHomeDocument ? '' : ($previousDocument ? route('documents.web.show', $previousDocument->slug) : '#'))
 @section('next_doc_url', $isHomeDocument ? '' : ($nextDocument ? route('documents.web.show', $nextDocument->slug) : '#'))
 
