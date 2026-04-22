@@ -1,13 +1,13 @@
 import '../sass/app.scss';
 
 $(function () {
-    var $sidebar = $('#docsSidebar');
-    var $mobileBackdrop = $('#mobileSidebarBackdrop');
-    var $collapseBtn = $('#collapseSidebarBtn');
-    var $openMobileBtn = $('#openSidebarMobileBtn');
-    var $tocLinks = $('.doc-toc-link');
-    var $docsSearchInput = $('#docsSearchInput');
-    var $docsSearchClearBtn = $('#docsSearchClearBtn');
+    let $sidebar = $('#docsSidebar');
+    let $mobileBackdrop = $('#mobileSidebarBackdrop');
+    let $collapseBtn = $('#collapseSidebarBtn');
+    let $openMobileBtn = $('#openSidebarMobileBtn');
+    let $tocLinks = $('.doc-toc-link');
+    let $docsSearchInput = $('#docsSearchInput');
+    let $docsSearchClearBtn = $('#docsSearchClearBtn');
 
     function toggleSidebarCollapsedState() {
         $sidebar.toggleClass('sidebar-collapsed');
@@ -37,8 +37,8 @@ $(function () {
     }
 
     function updateActiveTocLink() {
-        var scrollPosition = $(window).scrollTop() + 140;
-        var activeId = null;
+        let scrollPosition = $(window).scrollTop() + 140;
+        let activeId = null;
 
         $('.abbott-content h2[id], .abbott-content h3[id]').each(function () {
             if ($(this).offset().top <= scrollPosition) {
@@ -63,10 +63,10 @@ $(function () {
 
     function resetSectionStateWhenSearchCleared() {
         $('.doc-search-section').each(function () {
-            var $toggle = $(this);
-            var target = $toggle.data('target');
-            var $panel = $(target);
-            var defaultExpanded = ($toggle.data('default-expanded') || '').toString() === 'true';
+            let $toggle = $(this);
+            let target = $toggle.data('target');
+            let $panel = $(target);
+            let defaultExpanded = ($toggle.data('default-expanded') || '').toString() === 'true';
 
             $toggle.attr('aria-expanded', defaultExpanded ? 'true' : 'false');
             $toggle.find('.doc-nav-chevron').toggleClass('rotate-90', defaultExpanded);
@@ -83,7 +83,7 @@ $(function () {
     }
 
     function filterDocumentationNavigation() {
-        var term = $.trim($docsSearchInput.val()).toLowerCase();
+        let term = $.trim($docsSearchInput.val()).toLowerCase();
 
         if (term === '') {
             resetSectionStateWhenSearchCleared();
@@ -92,26 +92,26 @@ $(function () {
         }
 
         $('.doc-search-item').each(function () {
-            var $item = $(this);
-            var text = ($item.data('search-text') || '').toString().toLowerCase();
-            var matches = text.indexOf(term) !== -1;
+            let $item = $(this);
+            let text = ($item.data('search-text') || '').toString().toLowerCase();
+            let matches = text.indexOf(term) !== -1;
 
             $item.toggle(matches);
         });
 
         $('.doc-search-section').each(function () {
-            var $toggle = $(this);
-            var target = $toggle.data('target');
-            var $panel = $(target);
-            var $wrapper = $toggle.closest('.doc-search-section-wrapper');
-            var sectionText = ($toggle.data('search-text') || '').toString().toLowerCase();
+            let $toggle = $(this);
+            let target = $toggle.data('target');
+            let $panel = $(target);
+            let $wrapper = $toggle.closest('.doc-search-section-wrapper');
+            let sectionText = ($toggle.data('search-text') || '').toString().toLowerCase();
 
-            var hasMatchingChildren = $panel.find('.doc-search-item').filter(function () {
+            let hasMatchingChildren = $panel.find('.doc-search-item').filter(function () {
                 return $(this).css('display') !== 'none';
             }).length > 0;
 
-            var sectionMatches = sectionText.indexOf(term) !== -1;
-            var shouldShowSection = sectionMatches || hasMatchingChildren;
+            let sectionMatches = sectionText.indexOf(term) !== -1;
+            let shouldShowSection = sectionMatches || hasMatchingChildren;
 
             $wrapper.toggle(shouldShowSection);
 
@@ -155,11 +155,11 @@ $(function () {
             return;
         }
 
-        var $button = $(this);
-        var target = $button.data('target');
-        var $panel = $(target);
-        var $chevron = $button.find('.doc-nav-chevron');
-        var willOpen = !$panel.is(':visible');
+        let $button = $(this);
+        let target = $button.data('target');
+        let $panel = $(target);
+        let $chevron = $button.find('.doc-nav-chevron');
+        let willOpen = !$panel.is(':visible');
 
         $panel.stop(true, true).slideToggle(150);
         $chevron.toggleClass('rotate-90', willOpen);

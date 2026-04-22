@@ -27,7 +27,7 @@
     ]
   },
   "Modules/CoreUI/Resources/assets/js/app.js": {
-    "file": "assets/app-DPgoHfKQ.js",
+    "file": "assets/app-B82sJXNW.js",
     "name": "app",
     "src": "Modules/CoreUI/Resources/assets/js/app.js",
     "isDynamicEntry": true,
@@ -70,7 +70,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-cfbx4uVj.js",
+    "file": "assets/app-CUrtq3tg.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
