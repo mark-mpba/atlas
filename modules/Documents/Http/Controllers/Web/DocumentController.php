@@ -170,6 +170,13 @@ class DocumentController extends Controller
      * @param bool $expandAll
      * @return array<string, mixed>
      */
+    /**
+     * Build the sidebar navigation from categories and published documents.
+     *
+     * @param string|null $activeSlug
+     * @param bool $expandAll
+     * @return array<string, mixed>
+     */
     protected function buildNavigation(?string $activeSlug = null, bool $expandAll = false): array
     {
         $activeDocument = null;
@@ -186,6 +193,10 @@ class DocumentController extends Controller
             ->with([
                 'documents' => function ($query): void {
                     $query->where('status', 'published')
+                        ->where(function ($innerQuery): void {
+                            $innerQuery->whereNull('is_home')
+                                ->orWhere('is_home', false);
+                        })
                         ->orderBy('title');
                 },
             ])
@@ -218,6 +229,10 @@ class DocumentController extends Controller
         $favourites = Document::query()
             ->where('status', 'published')
             ->where('is_favourite', true)
+            ->where(function ($query): void {
+                $query->whereNull('is_home')
+                    ->orWhere('is_home', false);
+            })
             ->orderBy('title')
             ->get()
             ->map(function (Document $document) use ($activeSlug): array {
