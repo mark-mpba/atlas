@@ -102,24 +102,60 @@ class DocumentController extends Controller
      * @param Document $document
      * @return string
      */
+    /**
+     * Resolve renderable HTML for a document.
+     *
+     * @param Document $document
+     * @return string
+     */
+    /**
+     * Resolve renderable HTML for a document.
+     *
+     * @param Document $document
+     * @return string
+     */
     protected function resolveRenderedContent(Document $document): string
     {
+        $preserveLeadingTitle = (bool) ($document->is_home ?? false);
+
         if (! empty($document->html_body)) {
-            return (string) $document->html_body;
+            $html = (string) $document->html_body;
+
+            return $preserveLeadingTitle
+                ? $html
+                : $this->removeLeadingDocumentTitle($html, (string) $document->title, true);
         }
 
         if (! empty($document->markdown_body)) {
-            return Str::markdown((string) $document->markdown_body);
+            $markdown = (string) $document->markdown_body;
+
+            if (! $preserveLeadingTitle) {
+                $markdown = $this->removeLeadingDocumentTitle($markdown, (string) $document->title, false);
+            }
+
+            return Str::markdown($markdown);
         }
 
         if (! empty($document->content)) {
-            return Str::markdown((string) $document->content);
+            $markdown = (string) $document->content;
+
+            if (! $preserveLeadingTitle) {
+                $markdown = $this->removeLeadingDocumentTitle($markdown, (string) $document->title, false);
+            }
+
+            return Str::markdown($markdown);
         }
 
         $sourcePath = $document->source_path ?? null;
 
         if (! empty($sourcePath) && Storage::disk('docs')->exists($sourcePath)) {
-            return Str::markdown((string) Storage::disk('docs')->get($sourcePath));
+            $markdown = (string) Storage::disk('docs')->get($sourcePath);
+
+            if (! $preserveLeadingTitle) {
+                $markdown = $this->removeLeadingDocumentTitle($markdown, (string) $document->title, false);
+            }
+
+            return Str::markdown($markdown);
         }
 
         throw new \RuntimeException(
@@ -230,4 +266,46 @@ class DocumentController extends Controller
         return redirect()->route('documents.web.index');
     }
 
+
+    /**
+     * Remove the first heading only if it matches the document title.
+     *
+     * @param string $content
+     * @param string $documentTitle
+     * @param bool $isHtml
+     * @return string
+     */
+    protected function removeLeadingDocumentTitle(string $content, string $documentTitle, bool $isHtml = false): string
+    {
+        $content = ltrim($content);
+        $documentTitle = trim($documentTitle);
+
+        if ($documentTitle === '') {
+            return $content;
+        }
+
+        if ($isHtml) {
+            if (preg_match('/^\s*<h1[^>]*>(.*?)<\/h1>\s*/is', $content, $matches)) {
+                $headingText = trim(strip_tags(html_entity_decode($matches[1], ENT_QUOTES | ENT_HTML5)));
+
+                if (strcasecmp($headingText, $documentTitle) === 0) {
+                    return preg_replace('/^\s*<h1[^>]*>.*?<\/h1>\s*/is', '', $content, 1) ?? $content;
+                }
+            }
+
+            return $content;
+        }
+
+        $content = preg_replace('/^\xEF\xBB\xBF/', '', $content) ?? $content;
+
+        if (preg_match('/^\s*#\s+(.+?)\R+/u', $content, $matches)) {
+            $headingText = trim($matches[1]);
+
+            if (strcasecmp($headingText, $documentTitle) === 0) {
+                return preg_replace('/^\s*#\s+.+\R+/u', '', $content, 1) ?? $content;
+            }
+        }
+
+        return $content;
+    }
 }
