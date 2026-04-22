@@ -29,6 +29,7 @@ Route::middleware(['web'])
     ->prefix('docs')
     ->as('documents.web.')
     ->group(function (): void {
+        Route::get('/docs', [WebDocumentController::class, 'home'])->name('home');
         Route::get('/', [WebDocumentController::class, 'index'])->name('index');
         Route::get('/{slug}', [WebDocumentController::class, 'show'])->name('show');
     });

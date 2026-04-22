@@ -4,6 +4,7 @@ namespace Modules\Documents\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Categories\Models\Category;
@@ -27,9 +28,10 @@ class DocumentController extends Controller
             ->orderBy('title')
             ->get();
 
+
         return view('documents::web.index', [
             'documents' => $documents,
-            'navigation' => $this->buildNavigation(null, true),
+            'navigation' => $this->buildNavigation(null, false),
         ]);
     }
 
@@ -179,4 +181,35 @@ class DocumentController extends Controller
             'favourites' => $favourites,
         ];
     }
+
+    /**
+     * Get the configured home document.
+     *
+     * @return Document|null
+     */
+    protected function getHomeDocument(): ?Document
+    {
+        return Document::query()
+            ->where('status', 'published')
+            ->where('is_home', true)
+            ->orderByDesc('id')
+            ->first();
+
+    }
+
+    /**
+     * Redirect to the configured home document.
+     *
+     * @return RedirectResponse
+     */
+
+    public function home():RedirectResponse
+    {
+        $homeDocument = $this->getHomeDocument();
+        if ($homeDocument !== null) {
+            return redirect()->route('documents.web.show', $homeDocument->slug);
+        }
+        return redirect()->route('documents.web.index');
+    }
+
 }

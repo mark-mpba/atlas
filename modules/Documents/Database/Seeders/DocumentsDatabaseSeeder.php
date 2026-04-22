@@ -99,6 +99,7 @@ class DocumentsDatabaseSeeder extends Seeder
                 'title' => 'Welcome to Sentinel Docs',
                 'slug' => 'welcome-to-sentinel-docs',
                 'excerpt' => 'Sentinel development process, branch structure, commit guidance, and developer workflow notes.',
+                'is_home' => true,
             ],
             [
                 'file' => 'indexes.md',
@@ -238,6 +239,13 @@ class DocumentsDatabaseSeeder extends Seeder
                 $payload['is_favourite'] = (bool) ($documentData['is_favourite'] ?? false);
             }
 
+            if (Schema::hasColumn($documentTable, 'is_home')) {
+                $payload['is_home'] = (bool) ($documentData['is_home'] ?? false);
+            }
+
+            if (Schema::hasColumn($documentTable, 'is_home')) {
+                Document::query()->update(['is_home' => false]);
+            }
             Document::query()->updateOrCreate(
                 [
                     'slug' => $documentData['slug'],
